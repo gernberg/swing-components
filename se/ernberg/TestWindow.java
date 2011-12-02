@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
+import se.ernberg.components.ZoomableImage;
 import se.ernberg.components.captcha.Captcha;
 import se.ernberg.components.captcha.CaptchaColourPainter;
 import se.ernberg.components.captcha.CaptchaSimplePainter;
@@ -25,6 +26,11 @@ public class TestWindow {
 		Captcha captcha = new Captcha(new CaptchaColourPainter());
 		
 		panel.add(captcha);
+		
+		ZoomableImage image = new ZoomableImage("/home/gustav/workspace/SwingComponents/src/images/w0tt.JPG");
+		
+		panel.add(image);
+		
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
