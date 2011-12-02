@@ -9,7 +9,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 
@@ -52,9 +51,11 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		zoom += e.getUnitsToScroll() / 100.0;
-		System.out.println("x: " + x + " y:" + y);
-		System.out.println("x: " + e.getX() + " y:" + e.getY());
+		zoom -= e.getUnitsToScroll() / 100.0;
+
+		x = -zoom*e.getX();
+		//-image.getWidth(this)/2;
+//		y = zoome.getY()-image.getHeight(this)/2;
 		revalidate();
 		repaint();
 	}
@@ -85,7 +86,10 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-
+		x = e.getX()-image.getWidth(this)/2;
+		System.out.println("Hj");
+		revalidate();
+		repaint();
 	}
 
 	@Override
@@ -101,6 +105,10 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
+//		x = e.getX()-image.getWidth(this)/2;
+//		y = e.getY()-image.getHeight(this)/2;
+//		revalidate();
+//		repaint();
 
 	}
 }
