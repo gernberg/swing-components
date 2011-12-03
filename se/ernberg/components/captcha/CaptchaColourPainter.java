@@ -1,6 +1,7 @@
 package se.ernberg.components.captcha;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -11,13 +12,22 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
-import se.ernberg.math.BetterMath;
+import se.ernberg.math.RandomFunctions;
 
 public class CaptchaColourPainter implements CaptchaPainter {
-	/**
-	 * Standard fontSize is 24, it's a good value for readability
-	 */
-	private float fontSize = 24;
+
+	private static CaptchaColourPainter instance;
+
+	private CaptchaColourPainter() {
+
+	}
+
+	public static CaptchaColourPainter getInstance() {
+		if (instance == null)
+			instance = new CaptchaColourPainter();
+		return instance;
+	}
+
 	private int maximumLetterSpacing = 5;
 
 	public void paint(Graphics g, String text) {
@@ -29,11 +39,10 @@ public class CaptchaColourPainter implements CaptchaPainter {
 		g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
 				RenderingHints.VALUE_RENDER_QUALITY);
 
-
 		int width = g.getClipBounds().width;
 		int height = g.getClipBounds().height;
-		
-		g2d.setFont(g2d.getFont().deriveFont((float) (height/2)));
+
+		g2d.setFont(g2d.getFont().deriveFont((float) (height / 2)));
 
 		AffineTransform t = new AffineTransform();
 		FontMetrics fm = g.getFontMetrics();
@@ -41,35 +50,31 @@ public class CaptchaColourPainter implements CaptchaPainter {
 		int left = (int) ((g.getClipBounds().width - fm.stringWidth(text) - Math
 				.random() * maximumLetterSpacing * text.length()) / 2);
 
-		g2d.setColor(new Color(
-				BetterMath.randomRange(200,255),
-				BetterMath.randomRange(200,255),
-				BetterMath.randomRange(200,255)
-				));
+		g2d.setColor(RandomFunctions.randomColor(200, 255));
 		g.fillRect(0, 0, width, height);
-		for (int i = 0; i < BetterMath.randomRange(5, 10); i++) {
+		for (int i = 0; i < RandomFunctions.randomRange(5, 10); i++) {
+			g2d.setColor(RandomFunctions.randomColor(200, 255));
 
-			g2d.setColor(new Color(
-					BetterMath.randomRange(0, 128),
-					BetterMath.randomRange(0, 128),
-					BetterMath.randomRange(0, 128)
-					));
-			g2d.transform(t);
-			g2d.drawLine(BetterMath.randomRange(0, width),
-					BetterMath.randomRange(0, height),
-					BetterMath.randomRange(0, width),
-					BetterMath.randomRange(0, height));
+			g2d.drawLine(RandomFunctions.randomRange(0, width),
+					RandomFunctions.randomRange(0, height),
+					RandomFunctions.randomRange(0, width),
+					RandomFunctions.randomRange(0, height));
+
 		}
 
 		for (char c : text.toCharArray()) {
-			g2d.setColor(new Color(
-					BetterMath.randomRange(55, 128),
-					BetterMath.randomRange(55, 128),
-					BetterMath.randomRange(55, 128)
-					));
-			g2d.drawString(String.valueOf(c), left,
-					(int) ((height + fm.getAscent()) / 2 + BetterMath.randomRange(-height, height)/8));
+			g2d.setColor(new Color(RandomFunctions.randomRange(55, 128),
+					RandomFunctions.randomRange(55, 128), RandomFunctions
+							.randomRange(55, 128)));
+			g2d.drawString(String.valueOf(c), left, (int) ((height + fm
+					.getAscent()) / 2 + RandomFunctions.randomRange(-height,
+					height) / 8));
 			left += fm.charWidth(c) + maximumLetterSpacing * Math.random();
 		}
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+		return new Dimension(300,100);
 	}
 }

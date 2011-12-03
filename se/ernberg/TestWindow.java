@@ -1,19 +1,15 @@
 package se.ernberg;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import se.ernberg.components.ZoomableImage;
 import se.ernberg.components.captcha.Captcha;
-import se.ernberg.components.captcha.CaptchaColourPainter;
-import se.ernberg.components.captcha.CaptchaSimplePainter;
 
 public class TestWindow {
 
@@ -23,9 +19,18 @@ public class TestWindow {
 		Container panel = frame.getContentPane();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
-		Captcha captcha = new Captcha(new CaptchaColourPainter());
-		
+		Captcha captcha = new Captcha();
 		panel.add(captcha);
+
+		final JButton button = new JButton("asdf");
+		final JTextField textfield = new JTextField("asdf");
+		
+
+		
+		
+		panel.add(button);
+		panel.add(textfield);
+		
 		
 		ZoomableImage image = new ZoomableImage("/home/gustav/workspace/SwingComponents/src/images/w0tt.JPG");
 		

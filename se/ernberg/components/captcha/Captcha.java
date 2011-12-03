@@ -11,28 +11,27 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class Captcha extends JPanel {
+
 	private final CaptchaImage CaptchaImage;
+	
 	private final JTextField textfield = new JTextField();
-	private final String text;
-	private static int standardLength = 5;
+	
+	private final String captchaText;
+	
 	private final ArrayList<CaptchaStatusListener> captchaStatusListeners = new ArrayList<CaptchaStatusListener>();
+	
+	private CaptchaOptions captchaOptions;
 
 	public Captcha() {
-		this(standardLength);
+		this(CaptchaOptions.getInstance());
 	}
 
-	public Captcha(int size) {
-		this(size, new CaptchaColourPainter());
-	}
+	public Captcha(CaptchaOptions options) {
+		captchaOptions = options;
+		captchaText = captchaOptions.getTextMaker().generateString();
 
-	public Captcha(CaptchaPainter painter) {
-		this(standardLength, painter);
-	}
-
-	public Captcha(int size, CaptchaPainter painter) {
-		text = buildString(size);
-
-		CaptchaImage = new CaptchaImage(text, painter);
+		CaptchaImage = new CaptchaImage(captchaText,
+				captchaOptions.getCaptchaPainter());
 
 		BoxLayout box = new BoxLayout(this, BoxLayout.Y_AXIS);
 
@@ -87,16 +86,7 @@ public class Captcha extends JPanel {
 	 * @return
 	 */
 	private boolean isCorrect() {
-		return text.equalsIgnoreCase(textfield.getText());
+		return captchaText.equalsIgnoreCase(textfield.getText());
 	}
 
-	private static String buildString(int length) {
-		StringBuilder sb = new StringBuilder();
-		String createfrom = "abcdefghjklmnpqrstwxyz";
-		for (int i = 0; i < length; i++) {
-			sb.append(createfrom.charAt((int) (Math.random() * createfrom
-					.length())));
-		}
-		return sb.toString();
-	}
 }

@@ -1,68 +1,96 @@
 package se.ernberg.components;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.FilteredImageSource;
+import java.awt.image.ImageFilter;
+import java.awt.image.ImageProducer;
+import java.awt.image.ReplicateScaleFilter;
 import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 public class ZoomableImage extends JComponent implements MouseWheelListener,
 		MouseMotionListener, MouseListener {
-	Image image;
+	Image image, resizedImage;
 
 	public ZoomableImage(Image image) {
 		this.image = image;
+		this.resizedImage = image;
 	}
 
 	public ZoomableImage(String filename) {
 		try {
 			image = ImageIO.read(new File(filename));
+			setPreferredSize(new Dimension(200, 600));
+			addMouseWheelListener(this);
+			addMouseMotionListener(this);
+			addMouseListener(this);
 		} catch (IOException e) {
 			System.out.println(e);
 			System.out.println("Kunde inte ladda filen");
 		}
-		setPreferredSize(new Dimension(200, 200));
-		addMouseWheelListener(this);
-		addMouseMotionListener(this);
-		addMouseListener(this);
-		x = -500;
 	}
 
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.scale(zoom, zoom);
-		g2d.translate(x, y);
-		g2d.drawImage(image, 0, 0, null);
+		// Försök inte rita bilder som inte finns
+		if(image!=null){
+			g2d.drawImage(image, (int) x, (int) y,
+					(int) (image.getWidth(this) * zoom),
+					(int) (image.getHeight(this) * zoom), null);
+		}
 	}
 
 	double zoom = 1;
 	double x, y = 0;
+	double scrollSpeed = 50.0;
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		zoom -= e.getUnitsToScroll() / 100.0;
 
-		x = -zoom*e.getX();
-		//-image.getWidth(this)/2;
-//		y = zoome.getY()-image.getHeight(this)/2;
+		long centerx = (int) ((e.getX() - x) / zoom);// image.getWidth(this)/2;
+		long centery = (int) ((e.getY() - y) / zoom);// image.getHeight(this)/2;
+		zoom -= e.getUnitsToScroll() / scrollSpeed;
+		if (zoom < 0)
+			zoom = 0.0001;
+
+		System.out.println("centerx: " + centerx);
+		System.out.println("centery: " + centery);
+		System.out.println("zoom: " + zoom);
+
+		int centerPointX = e.getX();
+		int centerPointY = e.getY();
+
+		int newx = (int) (centerPointX - centerx * zoom);
+		int newy = (int) (centerPointY - centery * zoom);
+		x = newx;
+		y = newy;
 		revalidate();
 		repaint();
 	}
 
+	long lastClicked = 0;
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
 	}
 
 	boolean isDragging = false;
@@ -77,6 +105,33 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			if ((lastClicked + 1000) > System.currentTimeMillis()) {
+				reset();
+			}
+			lastClicked = System.currentTimeMillis();
+		} else {
+			long centerx = (int) ((e.getX() - x) / zoom);// image.getWidth(this)/2;
+			long centery = (int) ((e.getY() - y) / zoom);// image.getHeight(this)/2;
+
+			int centerPointX = e.getX();
+			int centerPointY = e.getY();
+
+			int newx = (int) (centerPointX - centerx);
+			int newy = (int) (centerPointY - centery);
+			x = newx;
+			y = newy;
+			revalidate();
+			repaint();
+		}
+	}
+
+	public void reset() {
+		x = 0;
+		y = 0;
+		zoom = 1;
+		revalidate();
+		repaint();
 	}
 
 	@Override
@@ -86,29 +141,24 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		x = e.getX()-image.getWidth(this)/2;
-		System.out.println("Hj");
-		revalidate();
-		repaint();
+
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		x -= (lastx - e.getX())/zoom;
-		y -= (lasty - e.getY())/zoom;
+		lastClicked = 0;
+		x -= (lastx - e.getX());
+		y -= (lasty - e.getY());
 		lastx = e.getX();
 		lasty = e.getY();
-		System.out.println(lastx);
+		System.out.println(x + ":" + y);
 		revalidate();
 		repaint();
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-//		x = e.getX()-image.getWidth(this)/2;
-//		y = e.getY()-image.getHeight(this)/2;
-//		revalidate();
-//		repaint();
 
 	}
+
 }
