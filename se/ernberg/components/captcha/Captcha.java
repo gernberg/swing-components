@@ -1,5 +1,7 @@
 package se.ernberg.components.captcha;
 
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -10,32 +12,56 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * 
+ * 
+ * @author Gustav Ernberg <gustav.ernberg@gmail.com>
+ */
 public class Captcha extends JPanel {
-
-	private final CaptchaImage CaptchaImage;
-	
+	/**
+	 * The image that we're drawing on, keeps track of current word to draw and
+	 * which painter to use.
+	 */
+	private final CaptchaImage captchaImage;
+	/**
+	 * Used for user-input
+	 */
 	private final JTextField textfield = new JTextField();
-	
+	/**
+	 * This is the captchaText that we want the user to write
+	 */
 	private final String captchaText;
-	
+	/**
+	 * A list of listeners to any changes in the status
+	 */
 	private final ArrayList<CaptchaStatusListener> captchaStatusListeners = new ArrayList<CaptchaStatusListener>();
-	
+
+	/**
+	 * Options for this specific Captcha
+	 */
 	private CaptchaOptions captchaOptions;
 
+	/**
+	 * Calling the constructor without arguments creates an Captcha instance
+	 * with options that will suit most users
+	 */
 	public Captcha() {
 		this(CaptchaOptions.getInstance());
 	}
 
+	/**
+	 * You may provide Options in order to customize your Captcha instance
+	 * 
+	 * @param options
+	 */
 	public Captcha(CaptchaOptions options) {
 		captchaOptions = options;
-		captchaText = captchaOptions.getTextMaker().generateString();
+		captchaText = captchaOptions.getCaptchaTextGenerator().generateString();
 
-		CaptchaImage = new CaptchaImage(captchaText,
+		captchaImage = new CaptchaImage(captchaText,
 				captchaOptions.getCaptchaPainter());
 
-		BoxLayout box = new BoxLayout(this, BoxLayout.Y_AXIS);
-
-		setLayout(box);
+		setLayout(new BoxLayout(this, captchaOptions.getOrientation()));
 
 		textfield.addKeyListener(new KeyAdapter() {
 			@Override
@@ -43,17 +69,30 @@ public class Captcha extends JPanel {
 				checkIfCorrect();
 			}
 		});
-
-		CaptchaImage.addMouseListener(new MouseAdapter() {
+		captchaImage.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
+				// If one clicks on the captchaImage, set focus to the textfield.
 				textfield.requestFocus();
 			}
 		});
 
-		add(CaptchaImage);
+		add(captchaImage);
 		add(textfield);
+		addHierarchyBoundsListener(new HierarchyBoundsListener() {
+			
+			@Override
+			public void ancestorResized(HierarchyEvent e) {
+				textfield.setFont(getFont().deriveFont((float)(textfield.getHeight()/2.0)));
+			}
+			
+			@Override
+			public void ancestorMoved(HierarchyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	public void addCaptchaStatusUpdatedListener(CaptchaStatusListener listener) {
@@ -65,7 +104,7 @@ public class Captcha extends JPanel {
 	}
 
 	public CaptchaImage getCaptchaImage() {
-		return CaptchaImage;
+		return captchaImage;
 	}
 
 	public void checkIfCorrect() {
