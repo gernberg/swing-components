@@ -31,7 +31,6 @@ public class CaptchaColourPainter implements CaptchaPainter {
 	private int maximumLetterSpacing = 5;
 	
 	public void paint(Graphics g, String text) {
-		FontMetrics fm = g.getFontMetrics();
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
 				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -44,6 +43,7 @@ public class CaptchaColourPainter implements CaptchaPainter {
 		int height = g.getClipBounds().height;
 
 		g2d.setFont(g2d.getFont().deriveFont((float) (height / 2)));
+		FontMetrics fm = g.getFontMetrics();
 
 
 		int left = (int) ((g.getClipBounds().width - fm.stringWidth(text) - Math
@@ -74,6 +74,6 @@ public class CaptchaColourPainter implements CaptchaPainter {
 
 	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(100,50);
+		return new Dimension(200,50);
 	}
 }

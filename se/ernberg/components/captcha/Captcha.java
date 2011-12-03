@@ -80,6 +80,7 @@ public class Captcha extends JPanel {
 
 		add(captchaImage);
 		add(textfield);
+		
 		addHierarchyBoundsListener(new HierarchyBoundsListener() {
 			
 			@Override

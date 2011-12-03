@@ -20,6 +20,7 @@ public class TestWindow {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
 		Captcha captcha = new Captcha();
+		
 		panel.add(captcha);
 
 		final JButton button = new JButton("asdf");
@@ -34,7 +35,7 @@ public class TestWindow {
 		
 		ZoomableImage image = new ZoomableImage("/home/gustav/workspace/SwingComponents/src/images/w0tt.JPG");
 		
-		panel.add(image);
+//		panel.add(image);
 		
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.pack();
