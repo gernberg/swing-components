@@ -42,7 +42,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
 		// Försök inte rita bilder som inte finns
-		if(image!=null){
+		if (image != null) {
 			g2d.drawImage(image, (int) x, (int) y,
 					(int) (image.getWidth(this) * zoom),
 					(int) (image.getHeight(this) * zoom), null);
@@ -59,8 +59,8 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		double centerx = Math.ceil((e.getX() - x) / zoom);// image.getWidth(this)/2;
 		double centery = Math.ceil((e.getY() - y) / zoom);// image.getHeight(this)/2;
 		zoom -= e.getUnitsToScroll() * scrollSpeed;
-		if (zoom*image.getHeight(this)<getHeight()){
-			zoom = (getHeight()/((double)image.getHeight(this)));
+		if (zoom * image.getHeight(this) < getHeight()) {
+			zoom = (getHeight() / ((double) image.getHeight(this)));
 		}
 
 		System.out.println("centerx: " + centerx);

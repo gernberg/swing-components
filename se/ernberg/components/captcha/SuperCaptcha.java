@@ -53,7 +53,7 @@ import se.ernberg.components.RefreshButton;
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
 public class SuperCaptcha extends JPanel implements DocumentListener,
-		FocusListener {
+		FocusListener, CaptchaStatusListener {
 	/**
 	 * The image that we're drawing on, keeps track of current word to draw and
 	 * which painter to use.
@@ -67,6 +67,10 @@ public class SuperCaptcha extends JPanel implements DocumentListener,
 	 * This is the captchaText that we want the user to write
 	 */
 	private String captchaText;
+	/**
+	 * This is the refreshbutton
+	 */
+	private final RefreshButton refreshButton = new RefreshButton();
 	/**
 	 * A list of listeners to any changes in the status
 	 */
@@ -114,20 +118,19 @@ public class SuperCaptcha extends JPanel implements DocumentListener,
 			}
 		});
 
-		RefreshButton button = new RefreshButton();
-		button.addActionListener(new ActionListener() {
+		refreshButton.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				reGenerateCaptchaText();
 			}
 		});
-		button.setVisible(captchaOptions.showRefreshButton());
-
+		refreshButton.setVisible(captchaOptions.showRefreshButton());
+		
 		add(captchaImage);
 		add(textfield);
-		add(button);
-
+		add(refreshButton);
+		addCaptchaStatusUpdatedListener(this);
 	}
 
 	/**
@@ -222,7 +225,10 @@ public class SuperCaptcha extends JPanel implements DocumentListener,
 		}
 		captchaOptions = options;
 	}
-
+	/**
+	 * Regenerates the captchaText, useful if the CaptchaTextGenerator or 
+	 * CaptchaPainter renders unreadable. 
+	 */
 	public void reGenerateCaptchaText() {
 		textfield.setText("");
 		captchaText = captchaOptions.getCaptchaTextGenerator().generateString();
@@ -238,12 +244,27 @@ public class SuperCaptcha extends JPanel implements DocumentListener,
 		revalidate();
 		repaint();
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	protected CaptchaPainter getCaptchaPainter() {
 		return captchaOptions.getCaptchaPainter();
 	}
-
+	
+	/**
+	 * @return captchaText
+	 */
 	protected String getCaptchaText() {
 		return captchaText;
+	}
+	
+	/**
+	 * This is used to change if the refreshButton should be visible or not
+	 */
+	@Override
+	public void captchaStatusUpdated(boolean isCorrect) {
+		refreshButton.setFocusable(!isCorrect);
 	}
 }
