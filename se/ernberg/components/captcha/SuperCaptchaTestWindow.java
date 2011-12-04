@@ -1,8 +1,6 @@
 package se.ernberg.components.captcha;
 
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -13,6 +11,15 @@ import javax.swing.WindowConstants;
 public class SuperCaptchaTestWindow {
 	final static JPanel mainPanel = new JPanel();
 
+	public SuperCaptchaTestWindow() {
+
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				createAndShowGUI();
+			}
+		});
+	}
+
 	private static void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("Super Captcha Test");
@@ -22,9 +29,10 @@ public class SuperCaptchaTestWindow {
 		mainPanel.add(example2());
 		mainPanel.add(example3());
 		mainPanel.add(example4());
+		mainPanel.add(example5());
 		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.getContentPane().add(mainPanel);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
 
@@ -93,19 +101,34 @@ public class SuperCaptchaTestWindow {
 	 * @return
 	 */
 	private static SuperCaptcha example4() {
-		SuperCaptcha captcha = new SuperCaptcha(CaptchaSimplePainter.getInstance(), CaptchaSwedishTextGenerator
-				.getInstance());
+		SuperCaptcha captcha = new SuperCaptcha(new CaptchaSimplePainter(),
+				new CaptchaSwedishTextGenerator());
 		captcha.showRefreshButton(false);
 		return captcha;
 	}
 
-	public static void main(String[] args) {
-		// Schedule a job for the event-dispatching thread:
-		// creating and showing this application's GUI.
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				createAndShowGUI();
+	/**
+	 * An example on how to configure the SuperCaptcha during runtime and
+	 * showing the possibility to change configuration at any time (in this
+	 * example - on a Status Update);
+	 * 
+	 * @return
+	 */
+	private static SuperCaptcha example5() {
+		final SuperCaptcha captcha = new SuperCaptcha();
+		captcha.addCaptchaStatusUpdatedListener(new CaptchaStatusListener() {
+			@Override
+			public void captchaStatusUpdated(boolean isCorrect) {
+				captcha.showRefreshButton(!isCorrect);
+				if (isCorrect) {
+					captcha.setPainter(new CaptchaSimplePainter());
+				}
 			}
 		});
+		return captcha;
+	}
+
+	public static void main(String[] args) {
+		new SuperCaptchaTestWindow();
 	}
 }

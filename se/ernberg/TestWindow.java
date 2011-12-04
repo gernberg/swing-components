@@ -2,22 +2,15 @@ package se.ernberg;
 
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.image.BufferedImage;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import se.ernberg.components.captcha.SuperCaptcha;
-import se.ernberg.components.captcha.CaptchaColourPainter;
-import se.ernberg.components.captcha.CaptchaOptions;
-import se.ernberg.components.captcha.CaptchaSimplePainter;
-import se.ernberg.components.captcha.CaptchaSimpleTextGenerator;
-import se.ernberg.components.captcha.CaptchaStatusListener;
-import se.ernberg.components.captcha.CaptchaSwedishTextGenerator;
-import se.ernberg.components.zoomableimage.ZoomableImage;
+import se.ernberg.components.captcha.SuperCaptchaTestWindow;
+import se.ernberg.components.zoomableimage.ZoomableImageTestWindow;
 
 public class TestWindow {
 
@@ -25,35 +18,27 @@ public class TestWindow {
 		// Create and set up the window.
 		JFrame frame = new JFrame("HelloWorldSwing");
 		final Container panel = frame.getContentPane();
-		panel.setLayout(new FlowLayout());//new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setLayout(new FlowLayout());// new BoxLayout(panel,
+											// BoxLayout.Y_AXIS));
+		JButton button = new JButton("SuperCaptchaTest");
+		button.addActionListener(new ActionListener() {
 
-		final CaptchaOptions options = new CaptchaOptions();
-		options.setCaptchaTextGenerator(new CaptchaSimpleTextGenerator(2));
-		options.setCaptchaTextGenerator(new CaptchaSwedishTextGenerator());
-		options.setCaptchaPainter(CaptchaColourPainter.getInstance());
-		
-		final SuperCaptcha captcha = new SuperCaptcha(options);
-		
-		panel.add(captcha);
-
-		final JButton button = new JButton("asdf");
-		final JTextField textfield = new JTextField("asdf");
-		
-		panel.add(button);
-		panel.add(textfield);
-
-		ZoomableImage image = new ZoomableImage(
-				"/home/gustav/workspace/SwingComponents/src/images/w0tt.JPG");
-		
-		captcha.addCaptchaStatusUpdatedListener(new CaptchaStatusListener() {
-			
 			@Override
-			public void captchaStatusUpdated(boolean isCorrect) {
-				button.setEnabled(isCorrect);
+			public void actionPerformed(ActionEvent e) {
+				new SuperCaptchaTestWindow();
 			}
 		});
+		panel.add(button);
+		button = new JButton("ZoomableImageTest");
+		button.addActionListener(new ActionListener() {
 
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new ZoomableImageTestWindow();
+			}
+		});
+		panel.add(button);
+		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
 

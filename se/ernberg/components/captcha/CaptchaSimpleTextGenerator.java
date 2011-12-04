@@ -13,7 +13,6 @@ package se.ernberg.components.captcha;
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
 public class CaptchaSimpleTextGenerator implements CaptchaTextGenerator {
-	private static CaptchaSimpleTextGenerator instance;
 	/**
 	 * The standard length that is used if no arguments are passed to the
 	 * Constructor
@@ -23,6 +22,13 @@ public class CaptchaSimpleTextGenerator implements CaptchaTextGenerator {
 	 * This instance's stringLength
 	 */
 	private int stringLength;
+	
+	/**
+	 * If no options are provided - the standardLength is used
+	 */
+	public CaptchaSimpleTextGenerator() {
+		this(standardLength);
+	}
 
 	/**
 	 * Creates a new instance of {@link CaptchaSimpleTextGenerator} and gives
@@ -35,24 +41,7 @@ public class CaptchaSimpleTextGenerator implements CaptchaTextGenerator {
 		this.stringLength = stringLength;
 	}
 	
-	/**
-	 * Singleton-pattern as suggested by
-	 * http://en.wikipedia.org/wiki/Singleton_pattern#The_solution_of_Bill_Pugh
-	 * 
-	 */
-	private static class SingletonHolder {
-		public static final CaptchaSimpleTextGenerator instance = new CaptchaSimpleTextGenerator(standardLength);
-	}
-
-	/**
-	 * If the standard string length is satisfactory, this method should be used
-	 * in order to retrieve the Singleton instance 
-	 * @return
-	 */
-	public static CaptchaSimpleTextGenerator getInstance() {
-		return SingletonHolder.instance;
-	}
-	
+		
 	/**
 	 * Generates a string to the length specified in this specifik instance.
 	 */

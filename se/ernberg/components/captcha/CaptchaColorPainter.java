@@ -14,8 +14,7 @@ import se.ernberg.math.RandomFunctions;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class CaptchaColourPainter implements CaptchaPainter {
-	private static CaptchaColourPainter instance;
+public class CaptchaColorPainter implements CaptchaPainter {
 	/**
 	 * The maximum number of spacing between letters (the acutal number used for
 	 * spacing will be in the range from 0 to this value)
@@ -25,18 +24,7 @@ public class CaptchaColourPainter implements CaptchaPainter {
 	/**
 	 * Private constructor since this is a Singleton
 	 */
-	private CaptchaColourPainter() {
-	}
-
-	/**
-	 * Gets the singleton instance
-	 * 
-	 * @return
-	 */
-	public static CaptchaColourPainter getInstance() {
-		if (instance == null)
-			instance = new CaptchaColourPainter();
-		return instance;
+	public CaptchaColorPainter() {
 	}
 
 	/**
@@ -88,6 +76,7 @@ public class CaptchaColourPainter implements CaptchaPainter {
 			left += fm.charWidth(c) + maximumLetterSpacing * Math.random();
 		}
 	}
+
 	/**
 	 * Calculates the width required to fit the captchaText
 	 * @param graphics

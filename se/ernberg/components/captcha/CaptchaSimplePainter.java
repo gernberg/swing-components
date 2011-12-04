@@ -14,28 +14,6 @@ import java.awt.Graphics;
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
 public class CaptchaSimplePainter implements CaptchaPainter {
-	private static CaptchaSimplePainter instance;
-
-	private CaptchaSimplePainter() {
-
-	}
-	/**
-	 * Singleton-pattern as suggested by
-	 * http://en.wikipedia.org/wiki/Singleton_pattern#The_solution_of_Bill_Pugh
-	 * 
-	 */
-	private static class SingletonHolder {
-		public static final CaptchaSimplePainter instance = new CaptchaSimplePainter();
-	}
-
-	/**
-	 * Returns the singleton instance of CaptchaSimplePainterSingleton
-	 * 
-	 * @return
-	 */
-	public static CaptchaSimplePainter getInstance() {
-		return SingletonHolder.instance;
-	}
 
 	/**
 	 * Paints green text on a black background
