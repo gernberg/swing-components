@@ -1,1 +1,20 @@
-Test
+SuperCaptcha is a captcha component for use together with Java Swing.
+
+==Usage==
+===Simple==
+SuperCaptcha superCaptcha = new SuperCaptcha();
+panel.add(superCaptcha)
+
+===With options==
+CaptchaOptions options = new CaptchaOptions();
+options.setCaptchaPainter(... CaptchaPainter ...);
+options.setCaptchaTextGenerator(... CaptchaTextGenerator ..);
+SuperCaptcha superCaptcha = new SuperCaptcha(options);
+panel.add(superCaptcha)
+
+===With global options===
+
+CaptchaOptions options = CaptchaOptions.getInstance();
+options.setCaptchaPainter(... CaptchaPainter ...);
+options.setCaptchaTextGenerator(... CaptchaTextGenerator ..);
+SuperCaptcha superCaptcha = new SuperCaptcha();
