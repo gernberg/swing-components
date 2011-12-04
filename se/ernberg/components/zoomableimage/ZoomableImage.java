@@ -27,7 +27,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	private boolean userStartedInteracting = false;
 	double zoom = 1;
 	double x, y = 0;
-	double scrollSpeed = 0.05;
+	double scrollSpeed = 0.005;
 
 	public ZoomableImage(Image image) {
 		this.image = image;
@@ -114,7 +114,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			if ((lastClicked[e.getButton()-1] + 1000) > System.currentTimeMillis()) {
 				switch (e.getButton()) {
 				case MouseEvent.BUTTON1:
-					zoomIn(e.getX(), e.getY(), (1 / scrollSpeed));
+					zoomIn(e.getX(), e.getY(), 100);
 					break;
 				case MouseEvent.BUTTON3:
 					reset();
