@@ -10,13 +10,14 @@ public class ZoomableImageTestWindow {
 
 	private static void createAndShowGUI() {
 		// Create and set up the window.
-		JFrame frame = new JFrame("HelloWorldSwing");
+		JFrame frame = new JFrame("Zoomable Image Test Window");
 		final Container panel = frame.getContentPane();
 		panel.setLayout(new BoxLayout(panel,
 											 BoxLayout.Y_AXIS));
 
 		ZoomableImage image = new ZoomableImage(
-				"/home/gustav/workspace/SwingComponents/src/images/w0tt.JPG");
+				"/home/gustav/workspace/SwingComponents/src/images/w0tt.JPG",
+				ZoomableImage.FILL_PANE);
 		panel.add(image);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.pack();
