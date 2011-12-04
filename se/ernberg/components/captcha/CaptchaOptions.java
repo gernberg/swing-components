@@ -14,6 +14,7 @@ public class CaptchaOptions {
 	private CaptchaTextGenerator captchaTextGenerator = CaptchaSimpleTextGenerator
 			.getInstance();
 	private ArrayList<SuperCaptcha> observers = new ArrayList<SuperCaptcha>();
+	private boolean showRefreshButton = true;
 
 	/**
 	 * Returns the singleton instance of CaptchaOptions, used by SuperCaptcha by
@@ -97,6 +98,13 @@ public class CaptchaOptions {
 				observers.get(i).somethingChanged();
 			}
 		}
+	}
+	public void setShowRefreshButton(boolean showRefreshButton){
+		notifyObservers(this.showRefreshButton, showRefreshButton);
+		this.showRefreshButton = showRefreshButton;
+	}
+	public boolean showRefreshButton() {
+		return showRefreshButton;
 	}
 
 }

@@ -1,5 +1,7 @@
 package se.ernberg.components.captcha;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
@@ -12,12 +14,10 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-/**
- * 
- * 
- * @author Gustav Ernberg <gustav.ernberg@gmail.com>
- */
-public class SuperCaptcha extends JPanel implements DocumentListener, FocusListener {
+import se.ernberg.components.RefreshButton;
+
+public class SuperCaptcha extends JPanel implements DocumentListener,
+		FocusListener {
 	/**
 	 * The image that we're drawing on, keeps track of current word to draw and
 	 * which painter to use.
@@ -30,7 +30,7 @@ public class SuperCaptcha extends JPanel implements DocumentListener, FocusListe
 	/**
 	 * This is the captchaText that we want the user to write
 	 */
-	private final String captchaText;
+	private String captchaText;
 	/**
 	 * A list of listeners to any changes in the status
 	 */
@@ -63,7 +63,7 @@ public class SuperCaptcha extends JPanel implements DocumentListener, FocusListe
 		captchaOptions.addObserver(this);
 
 		captchaText = captchaOptions.getCaptchaTextGenerator().generateString();
-		captchaImage = new CaptchaImage(captchaText, captchaOptions);
+		captchaImage = new CaptchaImage(this);
 
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		textfield.setColumns(captchaText.length());
@@ -78,8 +78,20 @@ public class SuperCaptcha extends JPanel implements DocumentListener, FocusListe
 			}
 		});
 
+		RefreshButton button = new RefreshButton();
+		button.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				reGenerateCaptchaText();
+			}
+		});
+		button.setVisible(captchaOptions.showRefreshButton());
+
 		add(captchaImage);
 		add(textfield);
+		add(button);
+
 	}
 
 	/**
@@ -144,7 +156,6 @@ public class SuperCaptcha extends JPanel implements DocumentListener, FocusListe
 	@Override
 	public void changedUpdate(DocumentEvent e) {
 		textChanged();
-
 	}
 
 	/**
@@ -165,12 +176,38 @@ public class SuperCaptcha extends JPanel implements DocumentListener, FocusListe
 		notifyStatusListeners(isCorrect());
 	}
 
+	/**
+	 * 
+	 * @param options
+	 */
 	public void setCaptchaOptions(CaptchaOptions options) {
+		if (!captchaOptions.equals(options)) {
+			somethingChanged();
+		}
 		captchaOptions = options;
 	}
 
+	public void reGenerateCaptchaText() {
+		textfield.setText("");
+		captchaText = captchaOptions.getCaptchaTextGenerator().generateString();
+		textChanged();
+		somethingChanged();
+	}
+
+	/**
+	 * Is called when something has changed - repaints and revalidates the
+	 * component
+	 */
 	public void somethingChanged() {
 		revalidate();
 		repaint();
+	}
+
+	protected CaptchaPainter getCaptchaPainter() {
+		return captchaOptions.getCaptchaPainter();
+	}
+
+	protected String getCaptchaText() {
+		return captchaText;
 	}
 }

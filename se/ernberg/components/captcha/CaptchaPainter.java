@@ -1,6 +1,5 @@
 package se.ernberg.components.captcha;
 
-import java.awt.Dimension;
 import java.awt.Graphics;
 
 /**

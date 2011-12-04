@@ -18,11 +18,7 @@ public class CaptchaImage extends JPanel implements HierarchyBoundsListener {
 	 * Contains all the options for our Captcha object, for now only used in
 	 * order to retrieve the CaptchaPainter
 	 */
-	private CaptchaOptions captchaOptions;
-	/**
-	 * The captcha text that we want our user to type
-	 */
-	private String captchaText;
+	private SuperCaptcha parent;
 
 	/**
 	 * Creates a new Captcha Image with a painter associated
@@ -30,9 +26,8 @@ public class CaptchaImage extends JPanel implements HierarchyBoundsListener {
 	 * @param text
 	 * @param painter
 	 */
-	public CaptchaImage(String text, CaptchaOptions captchaOptions) {
-		this.captchaOptions = captchaOptions;
-		this.captchaText = text;
+	public CaptchaImage(SuperCaptcha parent) {
+		this.parent = parent;
 		addHierarchyBoundsListener(this);
 	}
 
@@ -42,14 +37,7 @@ public class CaptchaImage extends JPanel implements HierarchyBoundsListener {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		captchaOptions.getCaptchaPainter().paint(g, getText());
-	}
-
-	/**
-	 * @return captchaText
-	 */
-	public String getText() {
-		return captchaText;
+		parent.getCaptchaPainter().paint(g, parent.getCaptchaText());
 	}
 
 	/**
@@ -59,7 +47,6 @@ public class CaptchaImage extends JPanel implements HierarchyBoundsListener {
 	 */
 	@Override
 	public void ancestorResized(HierarchyEvent e) {
-		System.out.println("Resized");
 		updateSize();
 	}
 
@@ -67,8 +54,8 @@ public class CaptchaImage extends JPanel implements HierarchyBoundsListener {
 	 * Calculates the size of the paint-area
 	 */
 	private void updateSize() {
-		int width = captchaOptions.getCaptchaPainter().calculateWidth(
-				getGraphics(), getText());
+		int width = parent.getCaptchaPainter().calculateWidth(
+				getGraphics(), parent.getCaptchaText());
 		int height = getGraphics().getFontMetrics().getHeight() * 2;
 		setPreferredSize(new Dimension(width, height));
 		revalidate();
@@ -80,8 +67,4 @@ public class CaptchaImage extends JPanel implements HierarchyBoundsListener {
 
 	}
 
-	protected void setCaptchaText(String captchaText) {
-		this.captchaText = captchaText;
-		revalidate();
-	}
 }
