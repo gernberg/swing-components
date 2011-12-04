@@ -92,7 +92,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		zoomIn(e.getX(), e.getY(), -e.getUnitsToScroll());
 	}
 
-	long lastClicked = 0;
+	long lastClicked[] = {0,0,0}; 
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -110,24 +110,24 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if ((lastClicked + 1000) > System.currentTimeMillis()) {
-			int unitsToScroll = 0;
-			switch (e.getButton()) {
-			case MouseEvent.BUTTON1:
-				unitsToScroll = 1;
-				break;
-			case MouseEvent.BUTTON3:
-				unitsToScroll = -1;
-				break;
-			default:
-				break;
+		if(e.getButton()<=3){
+			if ((lastClicked[e.getButton()-1] + 1000) > System.currentTimeMillis()) {
+				switch (e.getButton()) {
+				case MouseEvent.BUTTON1:
+					zoomIn(e.getX(), e.getY(), (1 / scrollSpeed));
+					break;
+				case MouseEvent.BUTTON3:
+					reset();
+					break;
+				default:
+					break;
+				}
 			}
-			zoomIn(e.getX(), e.getY(), (int) (unitsToScroll / scrollSpeed));
+			lastClicked[e.getButton()-1] = System.currentTimeMillis();
 		}
-		lastClicked = System.currentTimeMillis();
 	}
 
-	private void zoomIn(int x, int y, int unitsToScroll) {
+	private void zoomIn(int x, int y, double unitsToScroll) {
 		userStartedInteracting = true;
 		double centerx = Math.ceil((x - this.x) / zoom);// image.getWidth(this)/2;
 		double centery = Math.ceil((y - this.y) / zoom);// image.getHeight(this)/2;
@@ -166,7 +166,8 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		userStartedInteracting = true;
-		lastClicked = 0;
+		lastClicked[0] = 0;
+		lastClicked[2] = 0;
 		x -= (lastx - e.getX());
 		y -= (lasty - e.getY());
 		lastx = e.getX();
