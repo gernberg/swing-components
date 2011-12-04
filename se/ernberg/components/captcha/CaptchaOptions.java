@@ -17,15 +17,22 @@ public class CaptchaOptions {
 	private boolean showRefreshButton = true;
 
 	/**
+	 * Singleton-pattern as suggested by
+	 * http://en.wikipedia.org/wiki/Singleton_pattern#The_solution_of_Bill_Pugh
+	 * 
+	 */
+	private static class SingletonHolder {
+		public static final CaptchaOptions instance = new CaptchaOptions();
+	}
+
+	/**
 	 * Returns the singleton instance of CaptchaOptions, used by SuperCaptcha by
-	 * default if user do not give any options
+	 * default if user do not provide any options
 	 * 
 	 * @return
 	 */
 	public static CaptchaOptions getInstance() {
-		if (instance == null)
-			instance = new CaptchaOptions();
-		return instance;
+		return SingletonHolder.instance;
 	}
 
 	/**
@@ -99,10 +106,19 @@ public class CaptchaOptions {
 			}
 		}
 	}
-	public void setShowRefreshButton(boolean showRefreshButton){
+	/**
+	 * Defines if the default refresh button should be shown 
+	 * @param showRefreshButton
+	 */
+	public void setShowDefaultRefreshButton(boolean showRefreshButton) {
 		notifyObservers(this.showRefreshButton, showRefreshButton);
 		this.showRefreshButton = showRefreshButton;
 	}
+
+	/**
+	 * Tells if the default refresh button should be shown 
+	 * @return showRefreshButton
+	 */
 	public boolean showRefreshButton() {
 		return showRefreshButton;
 	}

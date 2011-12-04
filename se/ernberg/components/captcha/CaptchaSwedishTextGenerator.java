@@ -12,15 +12,22 @@ public class CaptchaSwedishTextGenerator implements CaptchaTextGenerator {
 	private static CaptchaSwedishTextGenerator instance;
 	private static String[] words = {"katt","hund", "fisk", "korv", "bröd"};
 	/**
-	 * Returns the current Singleton instance (if any, otherwise instantiates one)
+	 * Singleton-pattern as suggested by
+	 * http://en.wikipedia.org/wiki/Singleton_pattern#The_solution_of_Bill_Pugh
+	 * 
+	 */
+	private static class SingletonHolder {
+		public static final CaptchaSwedishTextGenerator instance = new CaptchaSwedishTextGenerator();
+	}
+
+	/**
+	 * Returns the singleton object
 	 * @return
 	 */
 	public static CaptchaSwedishTextGenerator getInstance() {
-		
-		if (instance == null)
-			instance = new CaptchaSwedishTextGenerator();
-		return instance;
+		return SingletonHolder.instance;
 	}
+	
 	/**
 	 * Generates a Swedish word
 	 */

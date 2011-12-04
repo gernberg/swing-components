@@ -16,6 +16,42 @@ import javax.swing.event.DocumentListener;
 
 import se.ernberg.components.RefreshButton;
 
+/**
+ * SuperCaptcha is a captcha component for use together with Java Swing.
+ * If no options are specified when constructing a SuperCaptcha it uses the 
+ * singleton instance of {@link CaptchaOptions}.
+ * 
+ * 1. Usage 
+ * 1.1 Simple ... 
+ * 	SuperCaptcha is meant to be really simple to get started with, therefore 
+ * 	some good defaults are chosen in order to get you going fast
+ * 	Example:
+ * 		SuperCaptcha superCaptcha = new SuperCaptcha();
+ * 		panel.add(superCaptcha)
+ * 
+ * 1.2 With options
+ * 	It's possible to specify a specific instance of CaptchaOptions for the 
+ *  SuperCaptcha to use. For full list of options see {@link CaptchaOptions}  
+ *  Example:
+ * 		CaptchaOptions options = new CaptchaOptions();
+ * 		options.setCaptchaPainter(... CaptchaPainter ...);
+ * 		options.setCaptchaTextGenerator(... CaptchaTextGenerator ..); SuperCaptcha
+ * 		superCaptcha = new SuperCaptcha(options); panel.add(superCaptcha)
+ * 
+ * 1.3 With global options
+ * 	Since SuperCaptcha by default uses CaptchaOptions.getInstance(), you may 
+ * 	override the global defaults for Captcha by changeing the options in 
+ *  the instance CaptchaOptions.getInstance().
+ * 	Example:
+ * 		CaptchaOptions options = CaptchaOptions.getInstance();
+ * 		options.setCaptchaPainter(... CaptchaPainter ...);
+ * 		options.setCaptchaTextGenerator(... CaptchaTextGenerator ..); SuperCaptcha
+ * 		superCaptcha = new SuperCaptcha();
+ * 
+ * 
+ * 
+ * @author Gustav Ernberg <gustav.ernberg@gmail.com>
+ */
 public class SuperCaptcha extends JPanel implements DocumentListener,
 		FocusListener {
 	/**

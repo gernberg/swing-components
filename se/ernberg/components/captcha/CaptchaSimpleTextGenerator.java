@@ -1,5 +1,6 @@
 package se.ernberg.components.captcha;
 
+
 /**
  * This is an all purpose text generator that generates a randomized text string
  * that lacks characters that are ambiguous (eg. o, O, 0, I, l, 1)
@@ -33,16 +34,25 @@ public class CaptchaSimpleTextGenerator implements CaptchaTextGenerator {
 	public CaptchaSimpleTextGenerator(int stringLength) {
 		this.stringLength = stringLength;
 	}
+	
+	/**
+	 * Singleton-pattern as suggested by
+	 * http://en.wikipedia.org/wiki/Singleton_pattern#The_solution_of_Bill_Pugh
+	 * 
+	 */
+	private static class SingletonHolder {
+		public static final CaptchaSimpleTextGenerator instance = new CaptchaSimpleTextGenerator(standardLength);
+	}
+
 	/**
 	 * If the standard string length is satisfactory, this method should be used
 	 * in order to retrieve the Singleton instance 
 	 * @return
 	 */
 	public static CaptchaSimpleTextGenerator getInstance() {
-		if (instance == null)
-			instance = new CaptchaSimpleTextGenerator(standardLength);
-		return instance;
+		return SingletonHolder.instance;
 	}
+	
 	/**
 	 * Generates a string to the length specified in this specifik instance.
 	 */

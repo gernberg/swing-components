@@ -42,7 +42,7 @@ public class RefreshButton extends JComponent implements MouseListener,
 	public RefreshButton() {
 		super();
 		try {
-			URL imgURL = getClass().getResource("icons/refsresh.png");
+			URL imgURL = getClass().getResource("icons/refresh.png");
 			image = ImageIO.read(imgURL);
 		} catch (Exception e) {
 			System.err.println("Couldn't find file");
@@ -82,6 +82,7 @@ public class RefreshButton extends JComponent implements MouseListener,
 		}
 		g.drawImage(image, 1, y + 1, this);
 	}
+
 	/**
 	 * If someone clicks directly on the element, then its considered an action
 	 */
@@ -114,12 +115,14 @@ public class RefreshButton extends JComponent implements MouseListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-
+		hasFocus = true;
+		repaint();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-
+		hasFocus = false;
+		repaint();
 	}
 
 	@Override
@@ -133,6 +136,7 @@ public class RefreshButton extends JComponent implements MouseListener,
 		// TODO Auto-generated method stub
 
 	}
+
 	/**
 	 * Handles focus
 	 */
@@ -141,6 +145,7 @@ public class RefreshButton extends JComponent implements MouseListener,
 		hasFocus = true;
 		repaint();
 	}
+
 	/**
 	 * Handles focus
 	 */
