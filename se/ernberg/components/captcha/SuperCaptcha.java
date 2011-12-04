@@ -17,36 +17,29 @@ import javax.swing.event.DocumentListener;
 import se.ernberg.components.RefreshButton;
 
 /**
- * SuperCaptcha is a captcha component for use together with Java Swing.
- * If no options are specified when constructing a SuperCaptcha it uses the 
- * singleton instance of {@link CaptchaOptions}.
+ * SuperCaptcha is a captcha component for use together with Java Swing. If no
+ * options are specified when constructing a SuperCaptcha it uses the singleton
+ * instance of {@link CaptchaOptions}.
  * 
- * 1. Usage 
- * 1.1 Simple ... 
- * 	SuperCaptcha is meant to be really simple to get started with, therefore 
- * 	some good defaults are chosen in order to get you going fast
- * 	Example:
- * 		SuperCaptcha superCaptcha = new SuperCaptcha();
- * 		panel.add(superCaptcha)
+ * 1. Usage 1.1 Simple ... SuperCaptcha is meant to be really simple to get
+ * started with, therefore some good defaults are chosen in order to get you
+ * going fast Example: SuperCaptcha superCaptcha = new SuperCaptcha();
+ * panel.add(superCaptcha)
  * 
- * 1.2 With options
- * 	It's possible to specify a specific instance of CaptchaOptions for the 
- *  SuperCaptcha to use. For full list of options see {@link CaptchaOptions}  
- *  Example:
- * 		CaptchaOptions options = new CaptchaOptions();
- * 		options.setCaptchaPainter(... CaptchaPainter ...);
- * 		options.setCaptchaTextGenerator(... CaptchaTextGenerator ..); SuperCaptcha
- * 		superCaptcha = new SuperCaptcha(options); panel.add(superCaptcha)
+ * 1.2 With options It's possible to specify a specific instance of
+ * CaptchaOptions for the SuperCaptcha to use. For full list of options see
+ * {@link CaptchaOptions} Example: CaptchaOptions options = new
+ * CaptchaOptions(); options.setCaptchaPainter(... CaptchaPainter ...);
+ * options.setCaptchaTextGenerator(... CaptchaTextGenerator ..); SuperCaptcha
+ * superCaptcha = new SuperCaptcha(options); panel.add(superCaptcha)
  * 
- * 1.3 With global options
- * 	Since SuperCaptcha by default uses CaptchaOptions.getInstance(), you may 
- * 	override the global defaults for Captcha by changeing the options in 
- *  the instance CaptchaOptions.getInstance().
- * 	Example:
- * 		CaptchaOptions options = CaptchaOptions.getInstance();
- * 		options.setCaptchaPainter(... CaptchaPainter ...);
- * 		options.setCaptchaTextGenerator(... CaptchaTextGenerator ..); SuperCaptcha
- * 		superCaptcha = new SuperCaptcha();
+ * 1.3 With global options Since SuperCaptcha by default uses
+ * CaptchaOptions.getInstance(), you may override the global defaults for
+ * Captcha by changeing the options in the instance
+ * CaptchaOptions.getInstance(). Example: CaptchaOptions options =
+ * CaptchaOptions.getInstance(); options.setCaptchaPainter(... CaptchaPainter
+ * ...); options.setCaptchaTextGenerator(... CaptchaTextGenerator ..);
+ * SuperCaptcha superCaptcha = new SuperCaptcha();
  * 
  * 
  * 
@@ -77,32 +70,25 @@ public class SuperCaptcha extends JPanel implements DocumentListener,
 	private final ArrayList<CaptchaStatusListener> captchaStatusListeners = new ArrayList<CaptchaStatusListener>();
 
 	/**
-	 * Options for this specific Captcha
-	 */
-	private CaptchaOptions captchaOptions;
-	/**
 	 * Sets the latestStatus (used to not flood the listeners with events);
 	 */
 	private boolean latestStatus;
+	private CaptchaPainter captchaPainter;
+	private CaptchaTextGenerator captchaTextGenerator;
+	private ArrayList<SuperCaptcha> observers = new ArrayList<SuperCaptcha>();
+	private boolean showRefreshButton = true;
 
 	/**
 	 * Calling the constructor without arguments creates an Captcha instance
 	 * with options that will suit most users
 	 */
 	public SuperCaptcha() {
-		this(CaptchaOptions.getInstance());
+		this(CaptchaColourPainter.getInstance(), CaptchaSwedishTextGenerator.getInstance());
 	}
-
-	/**
-	 * You may provide Options in order to customize your Captcha instance
-	 * 
-	 * @param options
-	 */
-	public SuperCaptcha(CaptchaOptions options) {
-		captchaOptions = options;
-		captchaOptions.addObserver(this);
-
-		captchaText = captchaOptions.getCaptchaTextGenerator().generateString();
+	public SuperCaptcha(CaptchaPainter captchaPainter, CaptchaTextGenerator captchaTextGenerator) {
+		this.captchaPainter = captchaPainter;
+		this.captchaTextGenerator = captchaTextGenerator;
+		captchaText = captchaTextGenerator.generateString();
 		captchaImage = new CaptchaImage(this);
 
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -125,7 +111,6 @@ public class SuperCaptcha extends JPanel implements DocumentListener,
 				reGenerateCaptchaText();
 			}
 		});
-		refreshButton.setVisible(captchaOptions.showRefreshButton());
 		
 		add(captchaImage);
 		add(textfield);
@@ -215,23 +200,14 @@ public class SuperCaptcha extends JPanel implements DocumentListener,
 		notifyStatusListeners(isCorrect());
 	}
 
+
 	/**
-	 * 
-	 * @param options
-	 */
-	public void setCaptchaOptions(CaptchaOptions options) {
-		if (!captchaOptions.equals(options)) {
-			somethingChanged();
-		}
-		captchaOptions = options;
-	}
-	/**
-	 * Regenerates the captchaText, useful if the CaptchaTextGenerator or 
-	 * CaptchaPainter renders unreadable. 
+	 * Regenerates the captchaText, useful if the CaptchaTextGenerator or
+	 * CaptchaPainter renders unreadable.
 	 */
 	public void reGenerateCaptchaText() {
 		textfield.setText("");
-		captchaText = captchaOptions.getCaptchaTextGenerator().generateString();
+		captchaText = getCaptchaTextGenerator().generateString();
 		textChanged();
 		somethingChanged();
 	}
@@ -244,27 +220,82 @@ public class SuperCaptcha extends JPanel implements DocumentListener,
 		revalidate();
 		repaint();
 	}
-	
-	/**
-	 * 
-	 * @return
-	 */
-	protected CaptchaPainter getCaptchaPainter() {
-		return captchaOptions.getCaptchaPainter();
-	}
-	
+
 	/**
 	 * @return captchaText
 	 */
 	protected String getCaptchaText() {
 		return captchaText;
 	}
-	
+
 	/**
 	 * This is used to change if the refreshButton should be visible or not
 	 */
 	@Override
 	public void captchaStatusUpdated(boolean isCorrect) {
 		refreshButton.setFocusable(!isCorrect);
+	}
+
+	
+		/**
+	 * @return {@link CaptchaTextGenerator}
+	 */
+	public CaptchaTextGenerator getCaptchaTextGenerator() {
+		return captchaTextGenerator;
+	}
+
+	/**
+	 * @return {@link CaptchaPainter}
+	 */
+	public CaptchaPainter getCaptchaPainter() {
+		return captchaPainter;
+	}
+
+	/**
+	 * Sets the text generator to be used. Please note that if SuperCaptcha has
+	 * generated a text string it will not regenerate one when this method is
+	 * called (compare to setCaptchaPainter). If you want to generate a new text
+	 * - please use the function reGenerate() in SuperCaptcha.
+	 * 
+	 * @param captchaTextGenerator
+	 */
+	public void setCaptchaTextGenerator(
+			CaptchaTextGenerator captchaTextGenerator) {
+		checkIfRepaintIsNeeded(this.captchaTextGenerator, captchaTextGenerator);
+		this.captchaTextGenerator = captchaTextGenerator;
+	}
+
+	/**
+	 * The default behaviour of SuperCaptcha is to repaint the graphics when
+	 * this method is called (and the new CaptchaPainter differs from the old
+	 * one).
+	 * 
+	 * @param captchaPainter
+	 */
+	public void setCaptchaPainter(CaptchaPainter captchaPainter) {
+		checkIfRepaintIsNeeded(this.captchaPainter, captchaPainter);
+		this.captchaPainter = captchaPainter;
+	}
+
+	/**
+	 * Tells observers that some option has changed
+	 * 
+	 * @param oldObject
+	 * @param newObject
+	 */
+	private void checkIfRepaintIsNeeded(Object oldObject, Object newObject) {
+		if (!oldObject.equals(newObject)) {
+			revalidate();
+			repaint();
+		}
+	}
+
+	/**
+	 * Tells if the default refresh button should be shown
+	 * 
+	 * @return showRefreshButton
+	 */
+	public void showRefreshButton(boolean showRefreshButton) {
+		refreshButton.setVisible(showRefreshButton);
 	}
 }

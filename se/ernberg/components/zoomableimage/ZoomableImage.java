@@ -1,9 +1,13 @@
 package se.ernberg.components.zoomableimage;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseEvent;
@@ -11,74 +15,126 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JComponent;
 
 public class ZoomableImage extends JComponent implements MouseWheelListener,
 		MouseMotionListener, MouseListener, HierarchyBoundsListener {
-	Image image, resizedImage;
+	Image image;
 	static final int FIT_PANE = 1;
 	static final int FILL_PANE = 2;
 	static final int FULL_SCALE = 3;
 	private int tactic = FULL_SCALE;
+	public final Action ACTION_RESET = new AbstractAction("Reset") {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			reset();
+		}
+	};
+	public final Action ACTION_ZOOM_IN = new AbstractAction("Zoom in") {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			zoomIn();
+		}
+	};
+	public final Action ACTION_ZOOM_OUT = new AbstractAction("Zoom out") {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			zoomOut();
+		}
+	};
+	public final Action ACTION_FILL_PANE = new AbstractAction("Fill pane") {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			setZoomToTactic(FILL_PANE);
+		}
+	};
+	public final Action ACTION_FIT_PANE = new AbstractAction("Fit pane") {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			setZoomToTactic(FIT_PANE);
+		}
+	};
 	private boolean userStartedInteracting = false;
 	double zoom = 1;
 	double x, y = 0;
 	double scrollSpeed = 0.005;
+	int lastx, lasty = 0;
+	private double fastZoom = 100;
 
-	public ZoomableImage(Image image) {
+	public ZoomableImage(Image image, int tactic) {
 		this.image = image;
-		this.resizedImage = image;
+		this.tactic = tactic;
+
+		setPreferredSize(new Dimension(image.getWidth(this),
+				image.getHeight(this)));
+
+		addMouseWheelListener(this);
+		addMouseMotionListener(this);
+		addMouseListener(this);
+		addHierarchyBoundsListener(this);
+		setBackground(Color.black);
 	}
 
-	public ZoomableImage(String filename, int tactic) {
-		try {
-			image = ImageIO.read(new File(filename));
-			this.tactic = tactic;
-			addMouseWheelListener(this);
-			addMouseMotionListener(this);
-			addMouseListener(this);
-			addHierarchyBoundsListener(this);
-			setPreferredSize(new Dimension(image.getWidth(this), image.getHeight(this)));
-		} catch (IOException e) {
-			System.out.println(e);
-			System.out.println("Kunde inte ladda filen");
-		}
+	protected void zoomOut() {
+		zoomIn(getWidth() / 2, getHeight() / 2, -fastZoom);
+	}
+
+	protected void zoomIn() {
+		zoomIn(getWidth() / 2, getHeight() / 2, fastZoom);
+	}
+
+	public ZoomableImage(Image image) {
+		this(image, FULL_SCALE);
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+		repaint();
 	}
 
 	private void setZoomToTactic(int tactic) {
+		this.tactic = tactic;
+		userStartedInteracting = false;
 		x = 0;
 		y = 0;
 		switch (tactic) {
 		case FIT_PANE:
 			zoom = (getHeight()) / ((float) image.getHeight(this));
-			if(getWidth()<(zoom*image.getWidth(this))){
+			if (getWidth() < (zoom * image.getWidth(this))) {
 				zoom = (getWidth()) / ((float) image.getWidth(this));
-				y = (getHeight() - image.getHeight(this)*zoom)/2;
-			}else{
-				x = (getWidth() - image.getWidth(this)*zoom)/2;
-				
+				y = (getHeight() - image.getHeight(this) * zoom) / 2;
+			} else {
+				x = (getWidth() - image.getWidth(this) * zoom) / 2;
+
 			}
 			break;
 		case FILL_PANE:
 			zoom = (getHeight()) / ((float) image.getHeight(this));
-			if(getWidth()>(zoom*image.getWidth(this))){
+			if (getWidth() > (zoom * image.getWidth(this))) {
 				zoom = (getWidth()) / ((float) image.getWidth(this));
-				y = (getHeight() - image.getHeight(this)*zoom)/2;
-			}else{
-				x = (getWidth() - image.getWidth(this)*zoom)/2;
+				y = (getHeight() - image.getHeight(this) * zoom) / 2;
+			} else {
+				x = (getWidth() - image.getWidth(this) * zoom) / 2;
 			}
 			break;
 		}
+		repaint();
 	}
 
 	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
+		g2d.setColor(getBackground());
+		g2d.fillRect(0, 0, getWidth(), getHeight());
 		// Försök inte rita bilder som inte finns
 		if (image != null) {
 			g2d.drawImage(image, (int) x, (int) y,
@@ -92,7 +148,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		zoomIn(e.getX(), e.getY(), -e.getUnitsToScroll());
 	}
 
-	long lastClicked[] = {0,0,0}; 
+	long lastClicked[] = { 0, 0, 0 };
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -106,15 +162,17 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		lasty = e.getY();
 	}
 
-	int lastx, lasty = 0;
-
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if(e.getButton()<=3){
-			if ((lastClicked[e.getButton()-1] + 1000) > System.currentTimeMillis()) {
+		if (e.getButton() <= lastClicked.length && e.getButton() > 0) {
+			if ((lastClicked[e.getButton() - 1] + 1000) > System
+					.currentTimeMillis()) {
 				switch (e.getButton()) {
 				case MouseEvent.BUTTON1:
-					zoomIn(e.getX(), e.getY(), 100);
+					zoomIn(e.getX(), e.getY(), fastZoom);
+					break;
+				case MouseEvent.BUTTON2:
+					setZoomToTactic(tactic);
 					break;
 				case MouseEvent.BUTTON3:
 					reset();
@@ -123,7 +181,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 					break;
 				}
 			}
-			lastClicked[e.getButton()-1] = System.currentTimeMillis();
+			lastClicked[e.getButton() - 1] = System.currentTimeMillis();
 		}
 	}
 
@@ -132,7 +190,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		double centerx = Math.ceil((x - this.x) / zoom);// image.getWidth(this)/2;
 		double centery = Math.ceil((y - this.y) / zoom);// image.getHeight(this)/2;
 		zoom += zoom * unitsToScroll * scrollSpeed;
-		if(zoom<0.01)
+		if (zoom < 0.01)
 			zoom = 0.01;
 		int centerPointX = x;
 		int centerPointY = y;
@@ -146,9 +204,10 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	}
 
 	public void reset() {
-		x = 0;
-		y = 0;
 		zoom = 1;
+		x = (getWidth() - image.getWidth(this)) / 2;
+		y = (getHeight() - image.getHeight(this)) / 2;
+
 		revalidate();
 		repaint();
 	}
@@ -172,7 +231,6 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		y -= (lasty - e.getY());
 		lastx = e.getX();
 		lasty = e.getY();
-		System.out.println(x + ":" + y);
 		revalidate();
 		repaint();
 	}

@@ -22,7 +22,6 @@ public class SuperCaptchaTestWindow {
 		mainPanel.add(example2());
 		mainPanel.add(example3());
 		mainPanel.add(example4());
-		mainPanel.add(example5());
 		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.getContentPane().add(mainPanel);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -94,38 +93,10 @@ public class SuperCaptchaTestWindow {
 	 * @return
 	 */
 	private static SuperCaptcha example4() {
-		final CaptchaOptions options = new CaptchaOptions();
-		options.setCaptchaPainter(CaptchaSimplePainter.getInstance());
-		options.setCaptchaTextGenerator(CaptchaSwedishTextGenerator
+		SuperCaptcha captcha = new SuperCaptcha(CaptchaSimplePainter.getInstance(), CaptchaSwedishTextGenerator
 				.getInstance());
-		options.setShowDefaultRefreshButton(false);
-		return new SuperCaptcha(options);
-	}
-
-	/**
-	 * An example on how to change all default. Notice that the generated texts
-	 * are not changed eve though the generator is changed, all new
-	 * SuperCaptchas that are created will however use the new text generator.
-	 * 
-	 * @return
-	 */
-	private static JPanel example5() {
-		final JPanel panel = new JPanel();
-		final JButton button = new JButton("Change all defaults");
-		button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				CaptchaOptions.getInstance().setCaptchaPainter(
-						CaptchaSimplePainter.getInstance());
-				CaptchaOptions.getInstance().setCaptchaTextGenerator(
-						CaptchaSwedishTextGenerator.getInstance());
-				mainPanel.add(new SuperCaptcha());
-			}
-		});
-		final SuperCaptcha captcha = new SuperCaptcha();
-		panel.add(captcha);
-		panel.add(button);
-		return panel;
+		captcha.showRefreshButton(false);
+		return captcha;
 	}
 
 	public static void main(String[] args) {

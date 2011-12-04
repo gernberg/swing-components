@@ -31,6 +31,7 @@ public class TestWindow {
 		options.setCaptchaTextGenerator(new CaptchaSimpleTextGenerator(2));
 		options.setCaptchaTextGenerator(new CaptchaSwedishTextGenerator());
 		options.setCaptchaPainter(CaptchaColourPainter.getInstance());
+		
 		final SuperCaptcha captcha = new SuperCaptcha(options);
 		
 		panel.add(captcha);
