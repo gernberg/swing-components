@@ -1,6 +1,8 @@
 package se.ernberg;
 
 import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.image.BufferedImage;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -9,34 +11,54 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import se.ernberg.components.ZoomableImage;
-import se.ernberg.components.captcha.Captcha;
+import se.ernberg.components.captcha.SuperCaptcha;
+import se.ernberg.components.captcha.CaptchaColourPainter;
+import se.ernberg.components.captcha.CaptchaOptions;
+import se.ernberg.components.captcha.CaptchaSimplePainter;
+import se.ernberg.components.captcha.CaptchaSimpleTextGenerator;
+import se.ernberg.components.captcha.CaptchaStatusListener;
+import se.ernberg.components.captcha.CaptchaSwedishTextGenerator;
 
 public class TestWindow {
 
 	private static void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("HelloWorldSwing");
-		Container panel = frame.getContentPane();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		
-		Captcha captcha = new Captcha();
+		final Container panel = frame.getContentPane();
+		panel.setLayout(new FlowLayout());//new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+		final CaptchaOptions options = new CaptchaOptions();
+		options.setCaptchaTextGenerator(new CaptchaSimpleTextGenerator(2));
+		options.setCaptchaTextGenerator(new CaptchaSwedishTextGenerator());
+		options.setCaptchaPainter(CaptchaColourPainter.getInstance());
+		final SuperCaptcha captcha = new SuperCaptcha(options);
 		
 		panel.add(captcha);
 
 		final JButton button = new JButton("asdf");
 		final JTextField textfield = new JTextField("asdf");
 		
-
-		
-		
 		panel.add(button);
 		panel.add(textfield);
+
+		ZoomableImage image = new ZoomableImage(
+				"/home/gustav/workspace/SwingComponents/src/images/w0tt.JPG");
 		
-		
-		ZoomableImage image = new ZoomableImage("/home/gustav/workspace/SwingComponents/src/images/w0tt.JPG");
-		
-//		panel.add(image);
-		
+		captcha.addCaptchaStatusUpdatedListener(new CaptchaStatusListener() {
+			
+			@Override
+			public void captchaStatusUpdated(boolean isCorrect) {
+				button.setEnabled(isCorrect);
+				if(isCorrect){
+					options.setCaptchaPainter(CaptchaSimplePainter.getInstance());
+//					captcha.setCaptchaOptions(options);
+//					panel.remove(captcha);
+//					panel.validate();
+//					panel.repaint();
+				}
+			}
+		});
+
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);

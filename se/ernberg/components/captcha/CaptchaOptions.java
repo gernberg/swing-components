@@ -1,22 +1,23 @@
 package se.ernberg.components.captcha;
 
-import java.awt.LayoutManager;
-import javax.swing.BoxLayout;
+import java.util.ArrayList;
 
 /**
- * En klass som är möjlig att använda som singleton
+ * A class that provides an easy-to-use interface for users who want to
+ * customize SuperCaptcha
  * 
- * @author gustav
+ * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
 public class CaptchaOptions {
 	private static CaptchaOptions instance;
 	private CaptchaPainter captchaPainter = CaptchaColourPainter.getInstance();
 	private CaptchaTextGenerator captchaTextGenerator = CaptchaSimpleTextGenerator
 			.getInstance();
-	private int orientation = BoxLayout.LINE_AXIS;
+	private ArrayList<SuperCaptcha> observers = new ArrayList<SuperCaptcha>();
 
 	/**
-	 * Hämtar en singleton-instans
+	 * Returns the singleton instance of CaptchaOptions, used by SuperCaptcha by
+	 * default if user do not give any options
 	 * 
 	 * @return
 	 */
@@ -26,28 +27,76 @@ public class CaptchaOptions {
 		return instance;
 	}
 
+	/**
+	 * @return {@link CaptchaTextGenerator}
+	 */
 	public CaptchaTextGenerator getCaptchaTextGenerator() {
 		return captchaTextGenerator;
 	}
 
+	/**
+	 * @return {@link CaptchaPainter}
+	 */
 	public CaptchaPainter getCaptchaPainter() {
 		return captchaPainter;
 	}
 
-	public void setCaptchaTextGenerator(CaptchaTextGenerator captchaTextGenerator) {
+	/**
+	 * Sets the text generator to be used. Please note that if SuperCaptcha has
+	 * generated a text string it will not regenerate one when this method is
+	 * called (compare to setCaptchaPainter). If you want to generate a new text
+	 * - please use the function reGenerate() in SuperCaptcha.
+	 * 
+	 * @param captchaTextGenerator
+	 */
+	public void setCaptchaTextGenerator(
+			CaptchaTextGenerator captchaTextGenerator) {
+		notifyObservers(this.captchaTextGenerator, captchaTextGenerator);
 		this.captchaTextGenerator = captchaTextGenerator;
 	}
 
+	/**
+	 * The default behaviour of SuperCaptcha is to repaint the graphics when
+	 * this method is called (and the new CaptchaPainter differs from the old
+	 * one).
+	 * 
+	 * @param captchaPainter
+	 */
 	public void setCaptchaPainter(CaptchaPainter captchaPainter) {
+		notifyObservers(this.captchaPainter, captchaPainter);
 		this.captchaPainter = captchaPainter;
 	}
 
-	public void setOrientation(int orientation) {
-		this.orientation = orientation;
+	/**
+	 * Adds an observing captcha element
+	 * 
+	 * @param captcha
+	 */
+	public void addObserver(SuperCaptcha captcha) {
+		observers.add(captcha);
 	}
 
-	public int getOrientation() {
-		return orientation;
+	/**
+	 * removes an observing captcha element
+	 * 
+	 * @param captcha
+	 */
+	public void removeObserver(SuperCaptcha captcha) {
+		observers.remove(captcha);
+	}
+
+	/**
+	 * Tells observers that some option has changed
+	 * 
+	 * @param oldObject
+	 * @param newObject
+	 */
+	private void notifyObservers(Object oldObject, Object newObject) {
+		if (observers.size() > 0 && !oldObject.equals(newObject)) {
+			for (int i = observers.size() - 1; i >= 0; i--) {
+				observers.get(i).somethingChanged();
+			}
+		}
 	}
 
 }

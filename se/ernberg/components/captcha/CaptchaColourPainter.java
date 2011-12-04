@@ -1,35 +1,51 @@
 package se.ernberg.components.captcha;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.font.FontRenderContext;
-import java.awt.font.GlyphVector;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
 
 import se.ernberg.math.RandomFunctions;
 
+/**
+ * Paints a string on a graphics instance. Applies some random colors and lines
+ * to the image in order to make it harder for automated robots to decode the
+ * text-string.
+ * 
+ * @author Gustav Ernberg <gustav.ernberg@gmail.com>
+ */
 public class CaptchaColourPainter implements CaptchaPainter {
-
 	private static CaptchaColourPainter instance;
+	/**
+	 * The maximum number of spacing between letters (the acutal number used for
+	 * spacing will be in the range from 0 to this value)
+	 */
+	private int maximumLetterSpacing = 5;
 
+	/**
+	 * Private constructor since this is a Singleton
+	 */
 	private CaptchaColourPainter() {
-
 	}
 
+	/**
+	 * Gets the singleton instance
+	 * 
+	 * @return
+	 */
 	public static CaptchaColourPainter getInstance() {
 		if (instance == null)
 			instance = new CaptchaColourPainter();
 		return instance;
 	}
 
-	private int maximumLetterSpacing = 5;
-	
+	/**
+	 * Paints the text string on the graphics instance (with some obfuscation as
+	 * described in the class definition)
+	 * 
+	 * @param graphics
+	 * @param text
+	 */
 	public void paint(Graphics g, String text) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -42,17 +58,15 @@ public class CaptchaColourPainter implements CaptchaPainter {
 		int width = g.getClipBounds().width;
 		int height = g.getClipBounds().height;
 
-		g2d.setFont(g2d.getFont().deriveFont((float) (height / 2)));
 		FontMetrics fm = g.getFontMetrics();
 
-
-		int left = (int) ((g.getClipBounds().width - fm.stringWidth(text) - Math
-				.random() * maximumLetterSpacing * text.length()) / 2);
-
-		g2d.setColor(RandomFunctions.randomColor(200, 255));
+		// Draws a background with a random color
+		g2d.setColor(RandomFunctions.randomColor(150, 255));
 		g.fillRect(0, 0, width, height);
+
+		// Adds some lines
 		for (int i = 0; i < RandomFunctions.randomRange(5, 10); i++) {
-			g2d.setColor(RandomFunctions.randomColor(200, 255));
+			g2d.setColor(RandomFunctions.randomColor(150, 255));
 
 			g2d.drawLine(RandomFunctions.randomRange(0, width),
 					RandomFunctions.randomRange(0, height),
@@ -61,19 +75,28 @@ public class CaptchaColourPainter implements CaptchaPainter {
 
 		}
 
+		// Makes the string to appear to be "almost" centered
+		int left = (int) ((g.getClipBounds().width - fm.stringWidth(text) - RandomFunctions
+				.randomRange(0, maximumLetterSpacing) * text.length()) / 2);
+
+		// Adds the characters one by one and with some random patterns applied
 		for (char c : text.toCharArray()) {
-			g2d.setColor(new Color(RandomFunctions.randomRange(55, 128),
-					RandomFunctions.randomRange(55, 128), RandomFunctions
-							.randomRange(55, 128)));
+			g2d.setColor(RandomFunctions.randomColor(55, 128));
 			g2d.drawString(String.valueOf(c), left, (int) ((height + fm
 					.getAscent()) / 2 + RandomFunctions.randomRange(-height,
 					height) / 8));
 			left += fm.charWidth(c) + maximumLetterSpacing * Math.random();
 		}
 	}
-
+	/**
+	 * Calculates the width required to fit the captchaText
+	 * @param graphics
+	 * @param captchaText
+	 */
 	@Override
-	public Dimension getPreferredSize() {
-		return new Dimension(200,50);
+	public int calculateWidth(Graphics g, String captchaText) {
+		System.out.println(g.getFontMetrics().stringWidth(captchaText));
+		return g.getFontMetrics().stringWidth(captchaText)
+				+ maximumLetterSpacing * captchaText.length();
 	}
 }

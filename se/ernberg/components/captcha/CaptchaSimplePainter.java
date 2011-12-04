@@ -4,9 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 
 public class CaptchaSimplePainter implements CaptchaPainter{
 	private static CaptchaSimplePainter instance;
@@ -28,7 +25,8 @@ public class CaptchaSimplePainter implements CaptchaPainter{
 		g.drawString(text, 0, (height/2)+fm.getDescent());
 	}
 	@Override
-	public Dimension getPreferredSize() {
-		return new Dimension(200,20);
+	public int calculateWidth(Graphics g, String captchaText) {
+		System.out.println(g.getFontMetrics().stringWidth(captchaText));
+		return 10+g.getFontMetrics().stringWidth(captchaText);
 	}
 }
