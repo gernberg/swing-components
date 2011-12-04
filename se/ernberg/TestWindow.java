@@ -14,7 +14,7 @@ import se.ernberg.components.ZoomableImage;
 import se.ernberg.components.captcha.SuperCaptcha;
 import se.ernberg.components.captcha.CaptchaColourPainter;
 import se.ernberg.components.captcha.CaptchaOptions;
-import se.ernberg.components.captcha.CaptchaSimplePainter;
+import se.ernberg.components.captcha.CaptchaSimpleSingletonPainter;
 import se.ernberg.components.captcha.CaptchaSimpleTextGenerator;
 import se.ernberg.components.captcha.CaptchaStatusListener;
 import se.ernberg.components.captcha.CaptchaSwedishTextGenerator;
@@ -50,7 +50,7 @@ public class TestWindow {
 			public void captchaStatusUpdated(boolean isCorrect) {
 				button.setEnabled(isCorrect);
 				if(isCorrect){
-					options.setCaptchaPainter(CaptchaSimplePainter.getInstance());
+					options.setCaptchaPainter(CaptchaSimpleSingletonPainter.getInstance());
 //					captcha.setCaptchaOptions(options);
 //					panel.remove(captcha);
 //					panel.validate();

@@ -4,15 +4,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-
-public class CaptchaSimplePainter implements CaptchaPainter{
-	private static CaptchaSimplePainter instance;
-	private CaptchaSimplePainter(){
+/**
+ * A simple painter for use with {@link SuperCaptcha}, mostly used as an example
+ * of how you could write your own SuperCaptcha painter.
+ *
+ * @author Gustav Ernberg <gustav.ernberg@gmail.com>
+ */
+public class CaptchaSimpleSingletonPainter implements CaptchaPainter{
+	private static CaptchaSimpleSingletonPainter instance;
+	private CaptchaSimpleSingletonPainter(){
 		
 	}
-	public static CaptchaSimplePainter getInstance(){
+	public static CaptchaSimpleSingletonPainter getInstance(){
 		if(instance==null)
-			instance = new CaptchaSimplePainter();
+			instance = new CaptchaSimpleSingletonPainter();
 		return instance;
 	}
 	public void paint(Graphics g, String text){
