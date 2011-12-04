@@ -131,7 +131,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		userStartedInteracting = true;
 		double centerx = Math.ceil((x - this.x) / zoom);// image.getWidth(this)/2;
 		double centery = Math.ceil((y - this.y) / zoom);// image.getHeight(this)/2;
-		zoom += unitsToScroll * scrollSpeed;
+		zoom += zoom * unitsToScroll * scrollSpeed;
 		if(zoom<0.01)
 			zoom = 0.01;
 		int centerPointX = x;
