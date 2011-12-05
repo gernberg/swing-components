@@ -15,19 +15,32 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 
+import se.ernberg.components.captcha.CaptchaStatusListener;
+
 public class ZoomableImage extends JComponent implements MouseWheelListener,
 		MouseMotionListener, MouseListener, HierarchyBoundsListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6605226564837331976L;
 	Image image;
 	static final int FIT_PANE = 1;
 	static final int FILL_PANE = 2;
 	static final int FULL_SCALE = 3;
 	private int tactic = FULL_SCALE;
+
 	public final Action ACTION_RESET = new AbstractAction("Reset") {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4104192164959042958L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -36,12 +49,22 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	};
 	public final Action ACTION_ZOOM_IN = new AbstractAction("Zoom in") {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8203146974277962168L;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			zoomIn();
 		}
 	};
 	public final Action ACTION_ZOOM_OUT = new AbstractAction("Zoom out") {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 7213669613104803783L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -50,6 +73,11 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	};
 	public final Action ACTION_FILL_PANE = new AbstractAction("Fill pane") {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1228809038909125370L;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			setZoomToTactic(FILL_PANE);
@@ -57,14 +85,24 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	};
 	public final Action ACTION_FIT_PANE = new AbstractAction("Fit pane") {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1530103639268808210L;
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			setZoomToTactic(FIT_PANE);
 		}
 	};
+	/**
+	 * A list of listeners to any changes in the status
+	 */
+	private final ArrayList<ZoomableImageChangedListener> zoomableChangeListeners = new ArrayList<ZoomableImageChangedListener>();
+
 	private boolean userStartedInteracting = false;
 	double zoom = 1;
-	double x, y = 0;
+	int x, y = 0;
 	double scrollSpeed = 0.005;
 	int lastx, lasty = 0;
 	private double fastZoom = 100;
@@ -97,7 +135,40 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	public void setImage(Image image) {
 		this.image = image;
-		repaint();
+		fireUpdateActions(ZoomableImageEvent.EventType.IMAGE_CHANGED);
+	}
+
+	public double getZoom() {
+		return zoom;
+	}
+
+	public void setZoom(double zoom) {
+		this.zoom = zoom;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+	public void setX(double x) {
+		setY((int) x);
+	}
+	public int getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		setY((int) y);
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public void setScrollSpeed(double scrollSpeed) {
+		this.scrollSpeed = scrollSpeed;
 	}
 
 	private void setZoomToTactic(int tactic) {
@@ -110,9 +181,9 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			zoom = (getHeight()) / ((float) image.getHeight(this));
 			if (getWidth() < (zoom * image.getWidth(this))) {
 				zoom = (getWidth()) / ((float) image.getWidth(this));
-				y = (getHeight() - image.getHeight(this) * zoom) / 2;
+				setY((getHeight() - image.getHeight(this) * zoom) / 2);
 			} else {
-				x = (getWidth() - image.getWidth(this) * zoom) / 2;
+				setY((getWidth() - image.getWidth(this) * zoom) / 2);
 
 			}
 			break;
@@ -120,13 +191,13 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			zoom = (getHeight()) / ((float) image.getHeight(this));
 			if (getWidth() > (zoom * image.getWidth(this))) {
 				zoom = (getWidth()) / ((float) image.getWidth(this));
-				y = (getHeight() - image.getHeight(this) * zoom) / 2;
+				setY((getHeight() - image.getHeight(this) * zoom) / 2);
 			} else {
-				x = (getWidth() - image.getWidth(this) * zoom) / 2;
+				setX((getWidth() - image.getWidth(this) * zoom) / 2);
 			}
 			break;
 		}
-		repaint();
+		fireUpdateActions();
 	}
 
 	@Override
@@ -199,16 +270,27 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		int newy = (int) (centerPointY - centery * zoom);
 		this.x = newx;
 		this.y = newy;
-		revalidate();
-		repaint();
+		fireUpdateActions(ZoomableImageEvent.EventType.ZOOM_IN);
 	}
 
 	public void reset() {
 		zoom = 1;
 		x = (getWidth() - image.getWidth(this)) / 2;
 		y = (getHeight() - image.getHeight(this)) / 2;
+		fireUpdateActions(ZoomableImageEvent.EventType.RESET);
+	}
 
-		revalidate();
+	/**
+	 * Notifies listeners that an update has occurred
+	 */
+	private void fireUpdateActions(ZoomableImageEvent.EventType eventType) {
+		ZoomableImageEvent e = new ZoomableImageEvent(getX(), getY(),
+				getWidth(), getHeight(), getZoom(), eventType);
+		for (int i = zoomableChangeListeners.size() - 1; i >= 0; i++) {
+			zoomableChangeListeners.get(i).viewUpdated(e);
+		}
+		// If the image moved, we are most likely needed to repaint the
+		// component
 		repaint();
 	}
 
@@ -231,8 +313,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		y -= (lasty - e.getY());
 		lastx = e.getX();
 		lasty = e.getY();
-		revalidate();
-		repaint();
+		fireUpdateActions(ZoomableImageEvent.EventType.POSITION_CHANGED);
 	}
 
 	@Override
@@ -253,4 +334,12 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		}
 	}
 
+	public void addZoomableChangeListener(ZoomableImageChangedListener listener) {
+		zoomableChangeListeners.add(listener);
+	}
+
+	public void removeZoomableChangeListener(
+			ZoomableImageChangedListener listener) {
+		zoomableChangeListeners.remove(listener);
+	}
 }

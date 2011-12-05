@@ -1,5 +1,7 @@
 package se.ernberg.components.captcha;
 
+import java.util.EventListener;
+
 /**
  * A listener that recieves updates when the user types anything in the
  * {@link SuperCaptcha} text-input field that changes the status of the
@@ -7,7 +9,7 @@ package se.ernberg.components.captcha;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public interface CaptchaStatusListener {
+public interface CaptchaStatusListener extends EventListener{
 	/**
 	 * Is called upon when the status changes
 	 * 

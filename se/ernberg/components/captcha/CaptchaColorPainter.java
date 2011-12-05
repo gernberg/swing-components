@@ -84,7 +84,6 @@ public class CaptchaColorPainter implements CaptchaPainter {
 	 */
 	@Override
 	public int calculateWidth(Graphics g, String captchaText) {
-		System.out.println(g.getFontMetrics().stringWidth(captchaText));
 		return g.getFontMetrics().stringWidth(captchaText)
 				+ maximumLetterSpacing * captchaText.length();
 	}

@@ -35,7 +35,6 @@ public class CaptchaSimplePainter implements CaptchaPainter {
 	 */
 	@Override
 	public int calculateWidth(Graphics g, String captchaText) {
-		System.out.println(g.getFontMetrics().stringWidth(captchaText));
 		return 10 + g.getFontMetrics().stringWidth(captchaText);
 	}
 }
