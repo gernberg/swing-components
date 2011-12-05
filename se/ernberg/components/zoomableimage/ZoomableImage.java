@@ -102,7 +102,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	private boolean userStartedInteracting = false;
 	double zoom = 1;
-	int x, y = 0;
+	double x, y = 0;
 	double scrollSpeed = 0.005;
 	int lastx, lasty = 0;
 	private double fastZoom = 100;
@@ -135,7 +135,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	public void setImage(Image image) {
 		this.image = image;
-		fireUpdateActions(ZoomableImageEvent.EventType.IMAGE_CHANGED);
+		fireUpdateActions();
 	}
 
 	public double getZoom() {
@@ -146,26 +146,6 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		this.zoom = zoom;
 	}
 
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
-		this.x = x;
-	}
-	public void setX(double x) {
-		setY((int) x);
-	}
-	public int getY() {
-		return y;
-	}
-
-	public void setY(double y) {
-		setY((int) y);
-	}
-	public void setY(int y) {
-		this.y = y;
-	}
 
 	public void setScrollSpeed(double scrollSpeed) {
 		this.scrollSpeed = scrollSpeed;
@@ -181,9 +161,9 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			zoom = (getHeight()) / ((float) image.getHeight(this));
 			if (getWidth() < (zoom * image.getWidth(this))) {
 				zoom = (getWidth()) / ((float) image.getWidth(this));
-				setY((getHeight() - image.getHeight(this) * zoom) / 2);
+				y = (getHeight() - image.getHeight(this) * zoom) / 2;
 			} else {
-				setY((getWidth() - image.getWidth(this) * zoom) / 2);
+				x = (getWidth() - image.getWidth(this) * zoom) / 2;
 
 			}
 			break;
@@ -191,9 +171,9 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			zoom = (getHeight()) / ((float) image.getHeight(this));
 			if (getWidth() > (zoom * image.getWidth(this))) {
 				zoom = (getWidth()) / ((float) image.getWidth(this));
-				setY((getHeight() - image.getHeight(this) * zoom) / 2);
+				y = (getHeight() - image.getHeight(this) * zoom) / 2;
 			} else {
-				setX((getWidth() - image.getWidth(this) * zoom) / 2);
+				x = (getWidth() - image.getWidth(this) * zoom) / 2;
 			}
 			break;
 		}
@@ -270,24 +250,22 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		int newy = (int) (centerPointY - centery * zoom);
 		this.x = newx;
 		this.y = newy;
-		fireUpdateActions(ZoomableImageEvent.EventType.ZOOM_IN);
+		fireUpdateActions();
 	}
 
 	public void reset() {
 		zoom = 1;
 		x = (getWidth() - image.getWidth(this)) / 2;
 		y = (getHeight() - image.getHeight(this)) / 2;
-		fireUpdateActions(ZoomableImageEvent.EventType.RESET);
+		fireUpdateActions();
 	}
 
 	/**
 	 * Notifies listeners that an update has occurred
 	 */
-	private void fireUpdateActions(ZoomableImageEvent.EventType eventType) {
-		ZoomableImageEvent e = new ZoomableImageEvent(getX(), getY(),
-				getWidth(), getHeight(), getZoom(), eventType);
+	private void fireUpdateActions() {
 		for (int i = zoomableChangeListeners.size() - 1; i >= 0; i++) {
-			zoomableChangeListeners.get(i).viewUpdated(e);
+//			zoomableChangeListeners.get(i).viewUpdated();
 		}
 		// If the image moved, we are most likely needed to repaint the
 		// component
@@ -313,7 +291,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		y -= (lasty - e.getY());
 		lastx = e.getX();
 		lasty = e.getY();
-		fireUpdateActions(ZoomableImageEvent.EventType.POSITION_CHANGED);
+		fireUpdateActions();
 	}
 
 	@Override
