@@ -104,19 +104,6 @@ public class ExampleWindow {
 		return panel;
 	}
 	
-	/**
-	 * Example on how to create a custom Text Generator on the fly
-	 * @return
-	 */
-	private static Component example6() {
-		return new SimpleCaptcha(new CaptchaTextGenerator() {
-			
-			@Override
-			public String generateString() {
-				return "foo";
-			}
-		});
-	}
 
 	/**
 	 * An example on how to configure the SimpleCaptcha
@@ -151,6 +138,19 @@ public class ExampleWindow {
 		return captcha;
 	}
 
+	/**
+	 * Example on how to create a custom Text Generator on the fly
+	 * @return
+	 */
+	private static Component example6() {
+		return new SimpleCaptcha(new CaptchaTextGenerator() {
+			
+			@Override
+			public String generateString() {
+				return "foo";
+			}
+		});
+	}
 	public static void main(String[] args) {
 		new ExampleWindow();
 	}

@@ -8,16 +8,16 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import se.ernberg.components.zoomableimage.ZoomableImage;
-import se.ernberg.components.zoomableimage.ZoomableImageJSliderMediator;
+import se.ernberg.components.zoomableimage.ZoomableImageChangedListener;
+import se.ernberg.components.zoomableimage.ZoomableImageEvent;
 
 /**
  * An usage example on how to use the ZoomableImage component
@@ -49,12 +49,16 @@ public class ExampleWindow {
 		final ZoomableImage zoomableImage = new ZoomableImage(image,
 				ZoomableImage.FIT_PANE);
 
+		final JLabel zoomLevel = new JLabel("Zoom:");
+		
 		// It's possible to set a preferred size, if none is specified. The size
 		// of the image is the the preferredSize by default
 		zoomableImage.setPreferredSize(new Dimension(100, 100));
 
 		// Add buttons for the different actions provided by ZoomableImage
 		JPanel optionsPanel = new JPanel();
+		optionsPanel.add(zoomLevel);
+		
 		optionsPanel.add(new JButton(zoomableImage.ACTION_RESET));
 		optionsPanel.add(new JButton(zoomableImage.ACTION_ZOOM_IN));
 		optionsPanel.add(new JButton(zoomableImage.ACTION_ZOOM_OUT));
@@ -63,18 +67,15 @@ public class ExampleWindow {
 		panel.setLayout(new BorderLayout(5, 5));
 		panel.add(optionsPanel, BorderLayout.NORTH);
 		panel.add(zoomableImage, BorderLayout.CENTER);
-		JSlider slider = new JSlider(JSlider.VERTICAL);
 		
-		new ZoomableImageJSliderMediator(slider, zoomableImage);
-		
-		slider.addChangeListener(new ChangeListener() {
+		zoomableImage.addZoomableChangeListener(new ZoomableImageChangedListener() {
+			
 			@Override
-			public void stateChanged(ChangeEvent e) {
-				zoomableImage.setZoom((((JSlider) e.getSource()).getValue())/100.0);
+			public void viewUpdated(ZoomableImageEvent e) {
+				zoomLevel.setText("Zoom: " + Math.floor(e.getZoom()*1000.0)/1000.0);
 			}
 		});
 		
-		panel.add(slider, BorderLayout.WEST);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
