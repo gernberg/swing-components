@@ -324,43 +324,22 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		}
 	}
 
+	/**
+	 * Gets the height of the image in its current zoomed state
+	 * 
+	 * @return
+	 */
 	private int getZoomedImageHeight() {
 		return (int) (image.getWidth(this) * zoom);
 	}
 
+	/**
+	 * Gets the height of the image in its current zoomed state
+	 * 
+	 * @return
+	 */
 	private int getZoomedImageWidth() {
 		return (int) (image.getWidth(this) * zoom);
-	}
-
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		zoomIn(e.getX(), e.getY(), -e.getUnitsToScroll());
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		lastx = e.getX();
-		lasty = e.getY();
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON1) {
-			if ((lastClicked + 1000) > System.currentTimeMillis()) {
-				switch (e.getButton()) {
-				case MouseEvent.BUTTON1:
-					zoomIn(e.getX(), e.getY(), fastZoomSpeed);
-					break;
-				default:
-					break;
-				}
-			}
-			lastClicked = System.currentTimeMillis();
-		}
 	}
 
 	private void zoomIn(int x, int y, double unitsToScroll) {
@@ -380,12 +359,14 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		fireUpdateActions();
 	}
 
-	// public void reset() {
-	// zoom = 1;
-	// x = (getWidth() - image.getWidth(this)) / 2;
-	// y = (getHeight() - image.getHeight(this)) / 2;
-	// fireUpdateActions();
-	// }
+	public void addZoomableChangeListener(ZoomableImageChangedListener listener) {
+		zoomableChangeListeners.add(listener);
+	}
+
+	public void removeZoomableChangeListener(
+			ZoomableImageChangedListener listener) {
+		zoomableChangeListeners.remove(listener);
+	}
 
 	/**
 	 * Notifies listeners that an update has occurred
@@ -402,16 +383,6 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-
-	}
-
-	@Override
 	public void mouseDragged(MouseEvent e) {
 		userStartedInteracting = true;
 		lastClicked = 0;
@@ -423,28 +394,107 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	}
 
 	@Override
-	public void mouseMoved(MouseEvent e) {
-
-	}
-
-	@Override
-	public void ancestorMoved(HierarchyEvent e) {
-
-	}
-
-	@Override
 	public void ancestorResized(HierarchyEvent e) {
 		if (!userStartedInteracting) {
 			setDisplayStrategy(displayStrategy);
 		}
 	}
 
-	public void addZoomableChangeListener(ZoomableImageChangedListener listener) {
-		zoomableChangeListeners.add(listener);
+	/**
+	 * Zoom
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		zoomIn(e.getX(), e.getY(), -e.getUnitsToScroll());
 	}
 
-	public void removeZoomableChangeListener(
-			ZoomableImageChangedListener listener) {
-		zoomableChangeListeners.remove(listener);
+	/**
+	 * Used in combination together with mouseDragged, used to set where a
+	 * drag-movement started (in order to accurately calculate how to move the
+	 * image)
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void mousePressed(MouseEvent e) {
+		lastx = e.getX();
+		lasty = e.getY();
+	}
+
+	/**
+	 * Used to detect double-clicks (and react by zooming in)
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON1) {
+			if ((lastClicked + 1000) > System.currentTimeMillis()) {
+				switch (e.getButton()) {
+				case MouseEvent.BUTTON1:
+					zoomIn(e.getX(), e.getY(), fastZoomSpeed);
+					break;
+				default:
+					break;
+				}
+			}
+			lastClicked = System.currentTimeMillis();
+		}
+	}
+
+	/**
+	 * Below are some unimplemented methods from interfaces, separated from the
+	 * rest for readability
+	 */
+
+	/**
+	 * Not implemented
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	/**
+	 * Not implemented
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void mouseExited(MouseEvent e) {
+
+	}
+
+	/**
+	 * Not implemented
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void mouseMoved(MouseEvent e) {
+
+	}
+
+	/**
+	 * Not implemented
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void ancestorMoved(HierarchyEvent e) {
+
+	}
+
+	/**
+	 * Not implemented
+	 * 
+	 * @param e
+	 */
+	@Override
+	public void mouseClicked(MouseEvent e) {
 	}
 }
