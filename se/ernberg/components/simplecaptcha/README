@@ -1,0 +1,59 @@
+Av: Gustav Ernberg (guser350@student.liu.se)
+
+Vad: Ett input-fält + bild för att förhindra att robotar använder applikationen
+
+Varför: Syftet är att presentera en bild för användarn som presenterar en text, 
+användaren måste sedan fylla i samma text i fältet bredvid för att bekräfta
+att den är mänsklig.
+
+Hur: Komponenten SuperCaptcha implementerar 
+
+Hur:  Komponenten Gem implementerar interfacet TextAnalyzer och
+instansieras genom ett anrop till lämplig konstruktor. När
+huvudkomponenten  är skapad kan den läggas till i valfri
+JContainer.
+
+För att kontrollera beteenden hos komponenten/agenten
+finnas det två huvud-interface som utvecklaren kan jobba med
+
+AnalyzableText: Ger stöd för utvecklaren att jobba med olika
+komponenter som tillhandahåller text. Med en enkel adapter klass som
+implementerar interfacet kan programmeraren använda sig av  godtycklig
+textmassa.  AnalyzableDocumentAdapter är en adapter som kan använda
+sig av javax.swing.text.Document typen, vilket kan tillhandahållas av
+de flesta swing komponenter, denna tillhandahålls av komponenten.
+
+TextType: Ett interface som styr vilken typ av text och hur agenten
+ska agera vida olika triggers för den Text-typen.  En agent kan agera
+på flera olika text-typer för varje AnalyzableText.  För
+demonstrations syfte två text-typer utvecklade, FormalLetter och
+InformalLetter.
+
+För att registrera Gem som analyserare för en viss AnalyzableText kan
+man antingen använda konstruktorn Gem(AnalyzableText) eller manuellt
+anropa AnalyzableText.addAnalyzer(TextAnalyzer). Man kan alltså ha
+flera Gem (eller andra implementationer an TextAnalyzer) som
+analyserar samma text.
+
+Användaren avgör därefter själv vilka texttyper som skall hanteras
+genom att implementera interfacet TextType och köra
+TextAnalyzer.addTextType(TextType) för alla de texttyper som skall hanteras. 
+
+
+1. Usage
+1.1 Simple
+SuperCaptcha superCaptcha = new SuperCaptcha();
+panel.add(superCaptcha)
+
+1.2 With options
+CaptchaOptions options = new CaptchaOptions();
+options.setCaptchaPainter(... CaptchaPainter ...);
+options.setCaptchaTextGenerator(... CaptchaTextGenerator ..);
+SuperCaptcha superCaptcha = new SuperCaptcha(options);
+panel.add(superCaptcha)
+
+1.3 With global options
+CaptchaOptions options = CaptchaOptions.getInstance();
+options.setCaptchaPainter(... CaptchaPainter ...);
+options.setCaptchaTextGenerator(... CaptchaTextGenerator ..);
+SuperCaptcha superCaptcha = new SuperCaptcha();
