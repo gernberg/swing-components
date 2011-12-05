@@ -1,5 +1,6 @@
-package se.ernberg.components.captcha;
+package se.ernberg.captchaexample;
 
+import java.awt.Component;
 import java.awt.FlowLayout;
 
 import javax.swing.BoxLayout;
@@ -8,10 +9,16 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-public class SuperCaptchaTestWindow {
+import se.ernberg.components.captcha.SimpleCaptchaPainter;
+import se.ernberg.components.captcha.CaptchaStatusListener;
+import se.ernberg.components.captcha.SwedishCaptchaTextGenerator;
+import se.ernberg.components.captcha.CaptchaTextGenerator;
+import se.ernberg.components.captcha.SuperCaptcha;
+
+public class ExampleWindow {
 	final static JPanel mainPanel = new JPanel();
 
-	public SuperCaptchaTestWindow() {
+	public ExampleWindow() {
 
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -30,6 +37,7 @@ public class SuperCaptchaTestWindow {
 		mainPanel.add(example3());
 		mainPanel.add(example4());
 		mainPanel.add(example5());
+		mainPanel.add(example6());
 		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.getContentPane().add(mainPanel);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -37,6 +45,7 @@ public class SuperCaptchaTestWindow {
 		frame.setVisible(true);
 
 	}
+
 
 	/**
 	 * It's really this easy to add a SuperCaptcha component
@@ -94,6 +103,20 @@ public class SuperCaptchaTestWindow {
 		panel.add(button);
 		return panel;
 	}
+	
+	/**
+	 * Example on how to create a custom Text Generator on the fly
+	 * @return
+	 */
+	private static Component example6() {
+		return new SuperCaptcha(new CaptchaTextGenerator() {
+			
+			@Override
+			public String generateString() {
+				return "foo";
+			}
+		});
+	}
 
 	/**
 	 * An example on how to configure the SuperCaptcha
@@ -101,8 +124,8 @@ public class SuperCaptchaTestWindow {
 	 * @return
 	 */
 	private static SuperCaptcha example4() {
-		SuperCaptcha captcha = new SuperCaptcha(new CaptchaSimplePainter(),
-				new CaptchaSwedishTextGenerator());
+		SuperCaptcha captcha = new SuperCaptcha(new SimpleCaptchaPainter(),
+				new SwedishCaptchaTextGenerator());
 		captcha.showRefreshButton(false);
 		return captcha;
 	}
@@ -121,7 +144,7 @@ public class SuperCaptchaTestWindow {
 			public void captchaStatusUpdated(boolean isCorrect) {
 				captcha.showRefreshButton(!isCorrect);
 				if (isCorrect) {
-					captcha.setPainter(new CaptchaSimplePainter());
+					captcha.setPainter(new SimpleCaptchaPainter());
 				}
 			}
 		});
@@ -129,6 +152,6 @@ public class SuperCaptchaTestWindow {
 	}
 
 	public static void main(String[] args) {
-		new SuperCaptchaTestWindow();
+		new ExampleWindow();
 	}
 }

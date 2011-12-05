@@ -1,4 +1,4 @@
-package se.ernberg;
+package se.ernberg.example;
 
 import java.awt.Container;
 import java.awt.FlowLayout;
@@ -9,10 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
 
-import se.ernberg.components.captcha.SuperCaptchaTestWindow;
-import se.ernberg.components.zoomableimage.ZoomableImageTestWindow;
-
-public class TestWindow {
+public class ExampleWindow {
 
 	private static void createAndShowGUI() {
 		// Create and set up the window.
@@ -25,7 +22,7 @@ public class TestWindow {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new SuperCaptchaTestWindow();
+				new se.ernberg.captchaexample.ExampleWindow();
 			}
 		});
 		panel.add(button);
@@ -34,7 +31,7 @@ public class TestWindow {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new ZoomableImageTestWindow();
+				new se.ernberg.zoomableimageexample.ExampleWindow();
 			}
 		});
 		panel.add(button);

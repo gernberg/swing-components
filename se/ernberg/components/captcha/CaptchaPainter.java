@@ -1,12 +1,13 @@
 package se.ernberg.components.captcha;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 
 /**
- * The main task of a CaptchaPainter is to paint the string on a graphics object
+ * The main task of a CaptchaPainter is to paint a string on a graphics object
  * in a somewhat readable fashion.
  * 
- * @author gernberg
+ * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
 public interface CaptchaPainter {
 	/**
@@ -24,6 +25,6 @@ public interface CaptchaPainter {
 	 * @param captchaText
 	 * @return
 	 */
-	public int calculateWidth(Graphics g, String captchaText);
+	public Dimension calculateDimension(Graphics g, String captchaText);
 
 }

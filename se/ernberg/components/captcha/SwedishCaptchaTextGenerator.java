@@ -8,7 +8,7 @@ import se.ernberg.math.RandomFunctions;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class CaptchaSwedishTextGenerator implements CaptchaTextGenerator {
+public class SwedishCaptchaTextGenerator implements CaptchaTextGenerator {
 	private static String[] words = {"katt","hund", "fisk", "korv", "bröd"};
 	/**
 	 * Generates a Swedish word

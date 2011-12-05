@@ -1,4 +1,4 @@
-package se.ernberg.components.zoomableimage;
+package se.ernberg.zoomableimageexample;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -6,26 +6,26 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JSlider;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import se.ernberg.components.zoomableimage.ZoomableImage;
+import se.ernberg.components.zoomableimage.ZoomableImageMediator;
 
 /**
  * An usage example on how to use the ZoomableImage component
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class ZoomableImageTestWindow {
-	public ZoomableImageTestWindow() {
+public class ExampleWindow {
+	public ExampleWindow() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				createAndShowGUI();
@@ -81,6 +81,6 @@ public class ZoomableImageTestWindow {
 	}
 
 	public static void main(String[] args) {
-		new ZoomableImageTestWindow();
+		new ExampleWindow();
 	}
 }

@@ -1,5 +1,6 @@
 package se.ernberg.components.captcha;
 
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,7 +15,7 @@ import se.ernberg.math.RandomFunctions;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class CaptchaColorPainter implements CaptchaPainter {
+public class ColorCaptchaPainter implements CaptchaPainter {
 	/**
 	 * The maximum number of spacing between letters (the acutal number used for
 	 * spacing will be in the range from 0 to this value)
@@ -24,7 +25,7 @@ public class CaptchaColorPainter implements CaptchaPainter {
 	/**
 	 * Private constructor since this is a Singleton
 	 */
-	public CaptchaColorPainter() {
+	public ColorCaptchaPainter() {
 	}
 
 	/**
@@ -83,8 +84,8 @@ public class CaptchaColorPainter implements CaptchaPainter {
 	 * @param captchaText
 	 */
 	@Override
-	public int calculateWidth(Graphics g, String captchaText) {
-		return g.getFontMetrics().stringWidth(captchaText)
-				+ maximumLetterSpacing * captchaText.length();
+	public Dimension calculateDimension(Graphics g, String captchaText) {
+		return new Dimension(g.getFontMetrics().stringWidth(captchaText)
+				+ maximumLetterSpacing * captchaText.length(), g.getFontMetrics().getHeight()*2);
 	}
 }

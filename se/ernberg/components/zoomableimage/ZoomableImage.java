@@ -5,9 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.MouseEvent;
@@ -21,8 +19,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 
-import se.ernberg.components.captcha.CaptchaStatusListener;
-
 public class ZoomableImage extends JComponent implements MouseWheelListener,
 		MouseMotionListener, MouseListener, HierarchyBoundsListener {
 	/**
@@ -30,9 +26,9 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 */
 	private static final long serialVersionUID = -6605226564837331976L;
 	Image image;
-	static final int FIT_PANE = 1;
-	static final int FILL_PANE = 2;
-	static final int FULL_SCALE = 3;
+	public static final int FIT_PANE = 1;
+	public static final int FILL_PANE = 2;
+	public static final int FULL_SCALE = 3;
 	private int tactic = FULL_SCALE;
 
 	public final Action ACTION_RESET = new AbstractAction("Reset") {

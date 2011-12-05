@@ -12,12 +12,12 @@ package se.ernberg.components.captcha;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class CaptchaSimpleTextGenerator implements CaptchaTextGenerator {
+public class SimpleCaptchaTextGenerator implements CaptchaTextGenerator {
 	/**
 	 * The standard length that is used if no arguments are passed to the
 	 * Constructor
 	 */
-	private static int standardLength = 5;
+	private static final int standardLength = 5;
 	/**
 	 * This instance's stringLength
 	 */
@@ -26,18 +26,18 @@ public class CaptchaSimpleTextGenerator implements CaptchaTextGenerator {
 	/**
 	 * If no options are provided - the standardLength is used
 	 */
-	public CaptchaSimpleTextGenerator() {
+	public SimpleCaptchaTextGenerator() {
 		this(standardLength);
 	}
 
 	/**
-	 * Creates a new instance of {@link CaptchaSimpleTextGenerator} and gives
+	 * Creates a new instance of {@link SimpleCaptchaTextGenerator} and gives
 	 * the possibility to specify how many characters the generated string
 	 * should be.
 	 * 
 	 * @param stringLength
 	 */
-	public CaptchaSimpleTextGenerator(int stringLength) {
+	public SimpleCaptchaTextGenerator(int stringLength) {
 		this.stringLength = stringLength;
 	}
 	
@@ -47,7 +47,7 @@ public class CaptchaSimpleTextGenerator implements CaptchaTextGenerator {
 	 */
 	public String generateString() {
 		StringBuilder sb = new StringBuilder();
-		String createfrom = "23456789abcdefghjkmnpqrstwxyz";
+		String createfrom = "23456789abcdefghjkmnpqrstwxz";
 		for (int i = 0; i < stringLength; i++) {
 			sb.append(createfrom.charAt((int) (Math.random() * createfrom
 					.length())));
