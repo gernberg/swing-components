@@ -17,12 +17,12 @@ public class ExampleWindow {
 		final Container panel = frame.getContentPane();
 		panel.setLayout(new FlowLayout());// new BoxLayout(panel,
 											// BoxLayout.Y_AXIS));
-		JButton button = new JButton("SuperCaptchaTest");
+		JButton button = new JButton("SimpleCaptchaTest");
 		button.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new se.ernberg.captchaexample.ExampleWindow();
+				new se.ernberg.simplecaptchaexample.ExampleWindow();
 			}
 		});
 		panel.add(button);
