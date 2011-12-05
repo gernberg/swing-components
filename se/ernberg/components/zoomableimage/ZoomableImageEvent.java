@@ -1,10 +1,22 @@
 package se.ernberg.components.zoomableimage;
 
+/**
+ * ZoomableImageEvent contains some basic information about the ZoomableImage
+ * which may be useful to a listener.
+ * 
+ * @author Gustav Ernberg <gustav.ernberg@gmail.com>
+ */
 public class ZoomableImageEvent {
-	private int x,y,width,height;
+	private int x, y, width, height;
 	private double zoom;
-
-	
+	/**
+	 * Creates a new ZoomableImageEvent
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param zoom
+	 */
 	public ZoomableImageEvent(int x, int y, int width, int height, double zoom) {
 		super();
 		this.x = x;
@@ -13,35 +25,25 @@ public class ZoomableImageEvent {
 		this.height = height;
 		this.zoom = zoom;
 	}
+
 	public int getX() {
 		return x;
 	}
-	public void setX(int x) {
-		this.x = x;
-	}
+
 	public int getY() {
 		return y;
 	}
-	public void setY(int y) {
-		this.y = y;
-	}
+
 	public int getWidth() {
 		return width;
 	}
-	public void setWidth(int width) {
-		this.width = width;
-	}
+
 	public int getHeight() {
 		return height;
 	}
-	public void setHeight(int height) {
-		this.height = height;
-	}
+
 	public double getZoom() {
 		return zoom;
 	}
-	public void setZoom(double zoom) {
-		this.zoom = zoom;
-	}
-	
+
 }

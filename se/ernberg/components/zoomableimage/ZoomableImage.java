@@ -342,6 +342,16 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		return (int) (image.getWidth(this) * zoom);
 	}
 
+	/**
+	 * Zooms in the image at given x,y coordinate
+	 * 
+	 * @param x
+	 *            coordinate in pane (not image)
+	 * @param y
+	 *            coordinate in pane (not image)
+	 * @param unitsToScroll
+	 *            how
+	 */
 	private void zoomIn(int x, int y, double unitsToScroll) {
 		userStartedInteracting = true;
 		double centerx = Math.ceil((x - this.x) / zoom);// image.getWidth(this)/2;
@@ -359,10 +369,21 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		fireUpdateActions();
 	}
 
+	/**
+	 * Adds a listener that recieves events when anything regarding the image
+	 * changes
+	 * 
+	 * @param listener
+	 */
 	public void addZoomableChangeListener(ZoomableImageChangedListener listener) {
 		zoomableChangeListeners.add(listener);
 	}
 
+	/**
+	 * Removes listener
+	 * 
+	 * @param listener
+	 */
 	public void removeZoomableChangeListener(
 			ZoomableImageChangedListener listener) {
 		zoomableChangeListeners.remove(listener);
@@ -372,7 +393,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 * Notifies listeners that an update has occurred
 	 */
 	private void fireUpdateActions() {
-		for (int i = zoomableChangeListeners.size() - 1; i >= 0; i++) {
+		for (int i = zoomableChangeListeners.size() - 1; i >= 0; i--) {
 			zoomableChangeListeners.get(i).viewUpdated(
 					new ZoomableImageEvent((int) x, (int) y, getWidth(),
 							getHeight(), zoom));
@@ -382,6 +403,12 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		repaint();
 	}
 
+	/**
+	 * Moves the image when mouse is dragged, relies on correct implementation
+	 * of lastx,lasty in mousePressed.
+	 * 
+	 * @param e
+	 */
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		userStartedInteracting = true;
@@ -393,6 +420,13 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		fireUpdateActions();
 	}
 
+	/**
+	 * Whenever the pane is resized - make sure our displayStrategy is updated,
+	 * if the user has changed anything regarding the image (zoom, pan) then
+	 * don't undo their changes - just ignore the window resize.
+	 * 
+	 * @param e
+	 */
 	@Override
 	public void ancestorResized(HierarchyEvent e) {
 		if (!userStartedInteracting) {

@@ -17,7 +17,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import se.ernberg.components.zoomableimage.ZoomableImage;
-import se.ernberg.components.zoomableimage.ZoomableImageMediator;
+import se.ernberg.components.zoomableimage.ZoomableImageJSliderMediator;
 
 /**
  * An usage example on how to use the ZoomableImage component
@@ -65,7 +65,7 @@ public class ExampleWindow {
 		panel.add(zoomableImage, BorderLayout.CENTER);
 		JSlider slider = new JSlider(JSlider.VERTICAL);
 		
-		new ZoomableImageMediator(slider, zoomableImage);
+		new ZoomableImageJSliderMediator(slider, zoomableImage);
 		
 		slider.addChangeListener(new ChangeListener() {
 			@Override
