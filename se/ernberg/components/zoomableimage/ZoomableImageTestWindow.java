@@ -6,12 +6,18 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JSlider;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * An usage example on how to use the ZoomableImage component
@@ -54,10 +60,21 @@ public class ZoomableImageTestWindow {
 		optionsPanel.add(new JButton(zoomableImage.ACTION_ZOOM_OUT));
 		optionsPanel.add(new JButton(zoomableImage.ACTION_FIT_PANE));
 		optionsPanel.add(new JButton(zoomableImage.ACTION_FILL_PANE));
-
 		panel.setLayout(new BorderLayout(5, 5));
 		panel.add(optionsPanel, BorderLayout.NORTH);
 		panel.add(zoomableImage, BorderLayout.CENTER);
+		JSlider slider = new JSlider(JSlider.VERTICAL);
+		
+		new ZoomableImageMediator(slider, zoomableImage);
+		
+		slider.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				zoomableImage.setZoom((((JSlider) e.getSource()).getValue())/100.0);
+			}
+		});
+		
+		panel.add(slider, BorderLayout.WEST);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);

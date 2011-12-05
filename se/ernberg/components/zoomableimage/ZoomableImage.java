@@ -144,8 +144,8 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 
 	public void setZoom(double zoom) {
 		this.zoom = zoom;
+		fireUpdateActions();
 	}
-
 
 	public void setScrollSpeed(double scrollSpeed) {
 		this.scrollSpeed = scrollSpeed;
@@ -265,7 +265,9 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 */
 	private void fireUpdateActions() {
 		for (int i = zoomableChangeListeners.size() - 1; i >= 0; i++) {
-//			zoomableChangeListeners.get(i).viewUpdated();
+			zoomableChangeListeners.get(i).viewUpdated(
+					new ZoomableImageEvent((int) x, (int) y, getWidth(),
+							getHeight(), zoom));
 		}
 		// If the image moved, we are most likely needed to repaint the
 		// component
