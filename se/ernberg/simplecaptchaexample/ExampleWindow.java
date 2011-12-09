@@ -124,7 +124,7 @@ public class ExampleWindow {
 		panel.add(captcha);
 
 		// Sets the generated string length to 10 chars
-		captcha = new SimpleCaptcha(new SimpleCaptchaTextGenerator(10));
+		captcha = new SimpleCaptcha(new SimpleCaptchaPainter(), new SimpleCaptchaTextGenerator(10));
 		panel.add(captcha);
 
 		// Sets the generated string length to 10 chars and use only a,b,c

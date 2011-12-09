@@ -3,6 +3,9 @@ package se.ernberg.components.simplecaptcha;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JComponent;
 
@@ -15,7 +18,7 @@ import javax.swing.JComponent;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class SimpleCaptchaPainter extends JComponent implements CaptchaPainter {
+public class SimpleCaptchaPainter extends CaptchaPainterAdapter implements CaptchaPainter {
 	private Color foregroundColor;
 	private Color backgroundColor;
 
@@ -36,30 +39,38 @@ public class SimpleCaptchaPainter extends JComponent implements CaptchaPainter {
 		this.foregroundColor = foregroundColor;
 		this.backgroundColor = backgroundColor;
 	}
-	/**
-	 * Paints green text on a black background
-	 * 
-	 * @param graphics
-	 * @param text
-	 */
-	public void paint(Graphics g, String text) {
-		int width = g.getClipBounds().width;
-		int height = g.getClipBounds().height;
-		
-		g.setColor(getBackgroundColor());
-		g.fillRect(0, 0, width, height);
-		
-		g.setColor(getForegroundColor());
-		g.drawString(text, 0, (height / 2) + g.getFontMetrics().getDescent());
+	
+
+	Image image;
+	@Override
+	protected Image getImage() {
+		return image;
 	}
 
+	@Override
+	protected void generateImage(Graphics g, String text) {
+		Dimension d = calculateDimension(g, text);
+
+		image = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
+		Graphics imgGraphics = image.getGraphics();
+		
+		
+		imgGraphics.setColor(getBackgroundColor());
+		imgGraphics.fillRect(0, 0, d.width, d.height);
+		
+		imgGraphics.setColor(getForegroundColor());
+		imgGraphics.drawString(text, 0, (d.height / 2) + imgGraphics.getFontMetrics().getDescent());
+		
+	}
+	
+	
 	/**
 	 * Calculates the width required to paint the text
 	 */
 	@Override
 	public Dimension calculateDimension(Graphics g, String captchaText) {
-		return new Dimension(10 + g.getFontMetrics().stringWidth(captchaText),
-				g.getFontMetrics().getHeight());
+		return new Dimension(g.getFontMetrics().stringWidth(captchaText),
+				g.getFontMetrics().getHeight()+10);
 	}
 
 	/**
@@ -93,8 +104,4 @@ public class SimpleCaptchaPainter extends JComponent implements CaptchaPainter {
 		this.backgroundColor = backgroundColor;
 	}
 
-	@Override
-	public void forceRegeneratedImage() {
-		
-	}
 }

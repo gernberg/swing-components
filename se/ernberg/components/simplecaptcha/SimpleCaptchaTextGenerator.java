@@ -20,7 +20,7 @@ public class SimpleCaptchaTextGenerator implements CaptchaTextGenerator {
 	 */
 	private static final int defaultLength = 5;
 
-	private static final String defaultChars = "23456789abcdefghjkmnpqrstwxz";
+	private static final String defaultChars = "23456789abdefghjmnpqrst";
 	private static final boolean defaultMixUpperAndLowerPolicy = false;
 
 	/**
