@@ -369,15 +369,19 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
-			getCaptchaPainter().paint(g, getCaptchaText());
+			getCaptchaPainter().paint(g, getCaptchaText(), new Dimension(getWidth(), getHeight()));
 		}
-
+		int oldWidth, oldHeight;
 		/**
-		 * Let the CaptchImage calculate it's size when neccessary
+		 * Let the Captcha regenerate image and calculate size when neccessary
 		 */
 		@Override
 		public void ancestorResized(HierarchyEvent e) {
-			updateSize();
+			if(oldWidth!= getWidth() || oldHeight != getHeight()){
+				oldWidth = getWidth();
+				oldHeight = getHeight();
+				forceRegeneratedImage();
+			}
 		}
 
 		/**
@@ -388,7 +392,6 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 					getGraphics(), getCaptchaText());
 
 			setPreferredSize(new Dimension(dimension.width, dimension.height));
-
 			revalidate();
 			repaint();
 		}
