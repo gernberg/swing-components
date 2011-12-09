@@ -41,7 +41,7 @@ public class ExampleWindow {
 		mainPanel.add(example4());
 		mainPanel.add(example5());
 		mainPanel.add(example6());
-		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
+//		frame.setLayout(new FlowLayout(FlowLayout.CENTER));
 		frame.getContentPane().add(mainPanel);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();

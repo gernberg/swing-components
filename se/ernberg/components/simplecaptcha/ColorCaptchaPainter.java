@@ -27,8 +27,7 @@ public class ColorCaptchaPainter extends CaptchaPainterAdapter {
 	private Image image = null;
 
 	@Override
-	protected void generateImage(Graphics g, String text) {
-		Dimension d = calculateDimension(g, text);
+	protected void generateImage(Graphics g, String text, Dimension d) {
 
 		image = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = (Graphics2D) image.getGraphics();

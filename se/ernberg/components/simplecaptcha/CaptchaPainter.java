@@ -15,8 +15,9 @@ public interface CaptchaPainter {
 	 * 
 	 * @param g
 	 * @param text
+	 * @param d
 	 */
-	public void paint(Graphics g, String text);
+	public void paint(Graphics g, String text, Dimension d);
 
 	/**
 	 * Calculates the size of the image
