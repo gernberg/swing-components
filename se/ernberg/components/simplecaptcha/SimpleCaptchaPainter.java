@@ -3,11 +3,7 @@ package se.ernberg.components.simplecaptcha;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-
-import javax.swing.JComponent;
 
 /**
  * A simple painter for use with {@link SimpleCaptcha}. Paints green text on
@@ -73,11 +69,14 @@ public class SimpleCaptchaPainter extends CaptchaPainterAdapter implements Captc
 	}
 
 	/**
-	 * Sets the foreground color
+	 * Sets the foreground color and regenerates image if neccesary.
 	 * 
 	 * @param foregroundColor
 	 */
 	public void setForegroundColor(Color foregroundColor) {
+		if(!this.foregroundColor.equals(foregroundColor)){
+			forceRegeneratedImage();
+		}
 		this.foregroundColor = foregroundColor;
 	}
 
@@ -89,10 +88,14 @@ public class SimpleCaptchaPainter extends CaptchaPainterAdapter implements Captc
 	}
 
 	/**
+	 * Sets the background color and regenerates image if neccesary.
 	 * @param backgroundColor
 	 *            the backgroundColor to set
 	 */
 	public void setBackgroundColor(Color backgroundColor) {
+		if(!this.backgroundColor.equals(backgroundColor)){
+			forceRegeneratedImage();
+		}
 		this.backgroundColor = backgroundColor;
 	}
 

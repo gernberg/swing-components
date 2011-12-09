@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
@@ -23,8 +22,6 @@ public class ColorCaptchaPainter extends CaptchaPainterAdapter {
 	 * spacing will be in the range from 0 to this value)
 	 */
 	private static final int maximumLetterSpacing = 5;
-
-	private Image image = null;
 
 	@Override
 	protected void generateImage(Graphics g, String text, Dimension d) {
@@ -84,11 +81,6 @@ public class ColorCaptchaPainter extends CaptchaPainterAdapter {
 		return new Dimension(x, y);
 	}
 
-
-	@Override
-	protected Image getImage() {
-		return image;
-	}
 
 
 }
