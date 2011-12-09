@@ -1,18 +1,21 @@
 package se.ernberg.simplecaptchaexample;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 import se.ernberg.components.simplecaptcha.CaptchaStatusListener;
 import se.ernberg.components.simplecaptcha.CaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.SimpleCaptcha;
 import se.ernberg.components.simplecaptcha.SimpleCaptchaPainter;
+import se.ernberg.components.simplecaptcha.SimpleCaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.SwedishCaptchaTextGenerator;
 
 public class ExampleWindow {
@@ -30,7 +33,6 @@ public class ExampleWindow {
 	private static void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("Super Captcha Test");
-
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		mainPanel.add(example1());
 		mainPanel.add(example2());
@@ -110,11 +112,32 @@ public class ExampleWindow {
 	 * 
 	 * @return
 	 */
-	private static SimpleCaptcha example4() {
+	private static JPanel example4() {
+		final JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+		
 		SimpleCaptcha captcha = new SimpleCaptcha(new SimpleCaptchaPainter(),
 				new SwedishCaptchaTextGenerator());
+		
 		captcha.showRefreshButton(false);
-		return captcha;
+		panel.add(captcha);
+
+		// Sets the generated string length to 10 chars
+		captcha = new SimpleCaptcha(new SimpleCaptchaTextGenerator(10));
+		panel.add(captcha);
+
+		// Sets the generated string length to 10 chars and use only a,b,c
+		captcha = new SimpleCaptcha(new SimpleCaptchaTextGenerator(10, "abc"));
+		panel.add(captcha);
+		
+		// Use only a,b,c and mix upper / lowercase
+		SimpleCaptchaTextGenerator textGenerator = new SimpleCaptchaTextGenerator("abc");
+		textGenerator.mixUpperAndLowerCase(true);
+		captcha = new SimpleCaptcha(textGenerator);
+		panel.add(captcha);
+		
+		
+		return panel;
 	}
 
 	/**
@@ -124,7 +147,9 @@ public class ExampleWindow {
 	 * 
 	 * @return
 	 */
-	private static SimpleCaptcha example5() {
+	private static JPanel example5() {
+		JPanel panel = new JPanel();
+		
 		final SimpleCaptcha captcha = new SimpleCaptcha();
 		captcha.addCaptchaStatusUpdatedListener(new CaptchaStatusListener() {
 			@Override
@@ -135,7 +160,9 @@ public class ExampleWindow {
 				}
 			}
 		});
-		return captcha;
+		
+		panel.add(captcha);
+		return panel;
 	}
 
 	/**

@@ -62,7 +62,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 */
 	private CaptchaPainter captchaPainter;
 	/**
-	 * The generator that is used for generating music
+	 * The generator that is used for generating captcha text strings
 	 */
 	private CaptchaTextGenerator captchaTextGenerator;
 
@@ -127,6 +127,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 		textfield.setColumns(captchaText.length());
+
 		textfield.getDocument().addDocumentListener(this);
 		textfield.addFocusListener(this);
 		captchaImage.addMouseListener(new MouseAdapter() {
@@ -281,7 +282,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	}
 
 	/**
-	 * This is used to change if the refreshButton should be visible or not
+	 * This is used to change if the refreshButton should be focusable or not
 	 */
 	@Override
 	public void captchaStatusUpdated(boolean isCorrect) {
