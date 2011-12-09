@@ -41,15 +41,8 @@ public class SimpleCaptchaPainter extends CaptchaPainterAdapter implements Captc
 	}
 	
 
-	Image image;
-	@Override
-	protected Image getImage() {
-		return image;
-	}
-
 	@Override
 	protected void generateImage(Graphics g, String text, Dimension d) {
-		System.out.println(d.height);
 		image = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
 		Graphics imgGraphics = image.getGraphics();
 		
