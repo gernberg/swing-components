@@ -130,12 +130,13 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			setDisplayStrategy(FIT_PANE);
 		}
 	};
-	
+
 	/**
 	 * 
 	 */
-	public final Action ACTION_ORIGINAL_SIZE = new AbstractAction("Original size") {
-		
+	public final Action ACTION_ORIGINAL_SIZE = new AbstractAction(
+			"Original size") {
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			setDisplayStrategy(ORIGINAL_SIZE);
@@ -314,6 +315,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		System.out.println(getCenterX() + "|" + getCenterY());
 		fireUpdateActions();
 	}
+
 	/**
 	 * Centers the image according to current zoom-level
 	 */
@@ -323,18 +325,20 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	}
 
 	/**
-	 * Calculates and returns the center x position for the image (after applied zoom)
+	 * Calculates and returns the center x position for the image (after applied
+	 * zoom)
 	 * 
-	 * @return int center x position for the image (after applied zoom) 
+	 * @return int center x position for the image (after applied zoom)
 	 */
 	private double getCenterX() {
 		return (getWidth() - image.getWidth(this) * zoom) / 2;
 	}
 
 	/**
-	 * Calculates and returns the center y position for the image (after applied zoom)
+	 * Calculates and returns the center y position for the image (after applied
+	 * zoom)
 	 * 
-	 * @return int center y position for the image (after applied zoom) 
+	 * @return int center y position for the image (after applied zoom)
 	 */
 	private double getCenterY() {
 		return (getHeight() - image.getHeight(this) * zoom) / 2;
