@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
+import javax.swing.JComponent;
+
 /**
  * A simple painter for use with {@link SimpleCaptcha}. Paints green text on
  * black background if no arguments are passed.
@@ -13,7 +15,7 @@ import java.awt.Graphics;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class SimpleCaptchaPainter implements CaptchaPainter {
+public class SimpleCaptchaPainter extends JComponent implements CaptchaPainter {
 	private Color foregroundColor;
 	private Color backgroundColor;
 
@@ -34,7 +36,6 @@ public class SimpleCaptchaPainter implements CaptchaPainter {
 		this.foregroundColor = foregroundColor;
 		this.backgroundColor = backgroundColor;
 	}
-
 	/**
 	 * Paints green text on a black background
 	 * 
@@ -90,5 +91,10 @@ public class SimpleCaptchaPainter implements CaptchaPainter {
 	 */
 	public void setBackgroundColor(Color backgroundColor) {
 		this.backgroundColor = backgroundColor;
+	}
+
+	@Override
+	public void forceRegeneratedImage() {
+		
 	}
 }

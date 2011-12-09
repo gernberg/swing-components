@@ -33,6 +33,7 @@ public class ExampleWindow {
 	private static void createAndShowGUI() {
 		// Create and set up the window.
 		JFrame frame = new JFrame("Super Captcha Test");
+		
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		mainPanel.add(example1());
 		mainPanel.add(example2());
@@ -127,7 +128,7 @@ public class ExampleWindow {
 		panel.add(captcha);
 
 		// Sets the generated string length to 10 chars and use only a,b,c
-		captcha = new SimpleCaptcha(new SimpleCaptchaTextGenerator(10, "abc"));
+		captcha = new SimpleCaptcha(new SimpleCaptchaTextGenerator(1, "abc"));
 		panel.add(captcha);
 		
 		// Use only a,b,c and mix upper / lowercase

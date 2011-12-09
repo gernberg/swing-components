@@ -173,6 +173,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 			latestStatus = isCorrect;
 			notifyStatusListeners(isCorrect);
 		}
+		captchaImage.forceRegeneratedImage();
 	}
 
 	/**
@@ -261,6 +262,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	public void reGenerateCaptchaText() {
 		textfield.setText("");
 		captchaText = getCaptchaTextGenerator().generateString();
+		captchaImage.validate();
 		textChanged();
 		somethingChanged();
 	}
@@ -377,16 +379,23 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		public void ancestorResized(HierarchyEvent e) {
 			updateSize();
 		}
-
+		
 		/**
 		 * Calculates the size of the paint-area
 		 */
 		private void updateSize() {
 			Dimension dimension = getCaptchaPainter().calculateDimension(
 					getGraphics(), getCaptchaText());
+			
 			setPreferredSize(new Dimension(dimension.width, dimension.height));
+			
 			revalidate();
 			repaint();
+		}
+
+		public void forceRegeneratedImage() {
+			getCaptchaPainter().forceRegeneratedImage();
+			updateSize();
 		}
 
 		@Override

@@ -26,5 +26,10 @@ public interface CaptchaPainter {
 	 * @return
 	 */
 	public Dimension calculateDimension(Graphics g, String captchaText);
+	
+	/**
+	 * Is called when the image needs to be redrawn
+	 */
+	public void forceRegeneratedImage();
 
 }
