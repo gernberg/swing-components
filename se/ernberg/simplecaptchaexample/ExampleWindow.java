@@ -73,6 +73,7 @@ public class ExampleWindow {
 			@Override
 			public void captchaStatusUpdated(boolean isCorrect) {
 				button.setEnabled(isCorrect);
+				button.requestFocusInWindow();
 			}
 		});
 		panel.add(captcha);
