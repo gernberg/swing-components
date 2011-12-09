@@ -45,11 +45,11 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 * ORIGINAL_SCALE means that the image should not be resized at all, only
 	 * centered to the middle of the designated pane.
 	 */
-	public static final int ORIGINAL_SCALE = 3;
+	public static final int ORIGINAL_SIZE = 3;
 	/**
 	 * By Default the strategy is to draw images in their original scale
 	 */
-	private int displayStrategy = ORIGINAL_SCALE;
+	private int displayStrategy = ORIGINAL_SIZE;
 	/**
 	 * Used to detect double-clicking
 	 */
@@ -130,6 +130,17 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			setDisplayStrategy(FIT_PANE);
 		}
 	};
+	
+	/**
+	 * 
+	 */
+	public final Action ACTION_ORIGINAL_SIZE = new AbstractAction("Original size") {
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			setDisplayStrategy(ORIGINAL_SIZE);
+		}
+	};
 	/**
 	 * A list of listeners to any changes in the status
 	 */
@@ -170,7 +181,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 *            Image to be made zoomeable
 	 */
 	public ZoomableImage(Image image) {
-		this(image, ORIGINAL_SCALE);
+		this(image, ORIGINAL_SIZE);
 	}
 
 	/**
@@ -274,8 +285,6 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 * displayStrategy
 	 */
 	private void doDisplayStrategy() {
-		x = 0;
-		y = 0;
 		switch (displayStrategy) {
 		case FIT_PANE:
 			// Set the zoom so that the height of the image should fit
@@ -283,11 +292,8 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			if (getZoomedImageWidth() > getWidth()) {
 				// If the width of the image is still to big
 				zoom = (getWidth()) / ((float) image.getWidth(this));
-				y = (getHeight() - image.getHeight(this) * zoom) / 2;
 			} else {
 				// If the height-resizing was sufficient in order to fit
-				x = (getWidth() - image.getWidth(this) * zoom) / 2;
-
 			}
 			break;
 		case FILL_PANE:
@@ -296,14 +302,42 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			if (getZoomedImageHeight() < getWidth()) {
 				// If the image width is too small (not filling)
 				zoom = (getWidth()) / ((float) image.getWidth(this));
-				y = (getHeight() - image.getHeight(this) * zoom) / 2;
 			} else {
 				// If the image width is filling the area
-				x = (getWidth() - image.getWidth(this) * zoom) / 2;
 			}
 			break;
+		case ORIGINAL_SIZE:
+			zoom = 1;
+			break;
 		}
+		centerImage();
+		System.out.println(getCenterX() + "|" + getCenterY());
 		fireUpdateActions();
+	}
+	/**
+	 * Centers the image according to current zoom-level
+	 */
+	private void centerImage() {
+		y = getCenterY();
+		x = getCenterX();
+	}
+
+	/**
+	 * Calculates and returns the center x position for the image (after applied zoom)
+	 * 
+	 * @return int center x position for the image (after applied zoom) 
+	 */
+	private double getCenterX() {
+		return (getWidth() - image.getWidth(this) * zoom) / 2;
+	}
+
+	/**
+	 * Calculates and returns the center y position for the image (after applied zoom)
+	 * 
+	 * @return int center y position for the image (after applied zoom) 
+	 */
+	private double getCenterY() {
+		return (getHeight() - image.getHeight(this) * zoom) / 2;
 	}
 
 	/**
@@ -317,7 +351,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(getBackground());
 		g2d.fillRect(0, 0, getWidth(), getHeight());
-		// Försök inte rita bilder som inte finns
+		// Don't try to draw images that doesn't exist.
 		if (image != null) {
 			g2d.drawImage(image, (int) x, (int) y, getZoomedImageWidth(),
 					getZoomedImageHeight(), null);
@@ -354,8 +388,8 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 */
 	private void zoomIn(int x, int y, double unitsToScroll) {
 		userStartedInteracting = true;
-		double centerx = Math.ceil((x - this.x) / zoom);// image.getWidth(this)/2;
-		double centery = Math.ceil((y - this.y) / zoom);// image.getHeight(this)/2;
+		double centerx = Math.ceil((x - this.x) / zoom);
+		double centery = Math.ceil((y - this.y) / zoom);
 		zoom += zoom * unitsToScroll * mouseWheelZoomSpeed;
 		if (zoom < 0.01)
 			zoom = 0.01;

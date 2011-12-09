@@ -17,6 +17,7 @@ import javax.swing.WindowConstants;
 import se.ernberg.components.zoomableimage.ZoomableImage;
 import se.ernberg.components.zoomableimage.ZoomableImageChangedListener;
 import se.ernberg.components.zoomableimage.ZoomableImageEvent;
+import se.ernberg.components.zoomableimage.ZoomableImageStandardToolbar;
 
 /**
  * An usage example on how to use the ZoomableImage component
@@ -54,17 +55,8 @@ public class ExampleWindow {
 		// of the image is the the preferredSize by default
 		zoomableImage.setPreferredSize(new Dimension(100, 100));
 
-		// Add buttons for the different actions provided by ZoomableImage
-		JPanel optionsPanel = new JPanel();
-		optionsPanel.add(zoomLevel);
-		
-		optionsPanel.add(new JButton(zoomableImage.ACTION_RESET));
-		optionsPanel.add(new JButton(zoomableImage.ACTION_ZOOM_IN));
-		optionsPanel.add(new JButton(zoomableImage.ACTION_ZOOM_OUT));
-		optionsPanel.add(new JButton(zoomableImage.ACTION_FIT_PANE));
-		optionsPanel.add(new JButton(zoomableImage.ACTION_FILL_PANE));
 		panel.setLayout(new BorderLayout(5, 5));
-		panel.add(optionsPanel, BorderLayout.NORTH);
+		panel.add(new ZoomableImageStandardToolbar(zoomableImage), BorderLayout.NORTH);
 		panel.add(zoomableImage, BorderLayout.CENTER);
 		
 		zoomableImage.addZoomableChangeListener(new ZoomableImageChangedListener() {
@@ -74,6 +66,7 @@ public class ExampleWindow {
 				zoomLevel.setText("Zoom: " + Math.floor(e.getZoom()*1000.0)/1000.0);
 			}
 		});
+		
 		
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.pack();
