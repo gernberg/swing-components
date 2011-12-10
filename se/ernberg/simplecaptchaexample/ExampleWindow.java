@@ -1,8 +1,6 @@
 package se.ernberg.simplecaptchaexample;
 
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -79,12 +77,7 @@ public class ExampleWindow {
 	 * @return
 	 */
 	private static JPanel example2() {
-		JPanel panel = new JPanel(){
-			public Dimension getPreferredSize(){
-				System.out.println("EX2:"+super.getPreferredSize());
-				return super.getPreferredSize();
-			}
-		};
+		JPanel panel = new JPanel();
 		SimpleCaptcha captcha = new SimpleCaptcha();
 		final JButton button = new JButton("Ok");
 		button.setEnabled(false);

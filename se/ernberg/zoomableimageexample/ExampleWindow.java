@@ -8,10 +8,8 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.image.BufferedImage;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import se.ernberg.components.zoomableimage.ZoomableImage;

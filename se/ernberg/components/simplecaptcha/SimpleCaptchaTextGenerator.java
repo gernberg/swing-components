@@ -1,6 +1,6 @@
 package se.ernberg.components.simplecaptcha;
 
-import java.util.Random;
+import se.ernberg.math.RandomFunctions;
 
 /**
  * This is an all purpose text generator that generates a randomized text string
@@ -21,15 +21,21 @@ public class SimpleCaptchaTextGenerator implements CaptchaTextGenerator {
 	private static final int defaultLength = 5;
 
 	private static final String defaultChars = "23456789abdefghjmnpqrst";
-	private static final boolean defaultMixUpperAndLowerPolicy = false;
 
 	/**
 	 * This instance's stringLength
 	 */
 	private int stringLength;
 
+	/**
+	 * The chars used for text-generation used by this instance
+	 */
 	private String useChars;
-	private boolean mixUpperAndLowerCase = true;
+
+	/**
+	 * Tells if we should mix upper and lowercase
+	 */
+	private boolean mixUpperAndLowerCase = false;
 
 	/**
 	 * If no options are provided - the standardLength is used
@@ -80,18 +86,19 @@ public class SimpleCaptchaTextGenerator implements CaptchaTextGenerator {
 	public String generateString() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < stringLength; i++) {
-			char randomChar = useChars.charAt((int) (Math.random() * useChars
-					.length()));
-			if (mixUpperAndLowerCase && Math.random() > 0.5) {
+			char randomChar = useChars.charAt(RandomFunctions.randomRange(0,
+					useChars.length()-1));
+			if (mixUpperAndLowerCase &&  Math.random() > 0.5) {
 				randomChar = Character.toUpperCase(randomChar);
 			}
 			sb.append(randomChar);
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * Tells if the generator should mix upper and lowercase chars
+	 * 
 	 * @param mixUpperAndLowerCase
 	 */
 	public void mixUpperAndLowerCase(boolean mixUpperAndLowerCase) {
