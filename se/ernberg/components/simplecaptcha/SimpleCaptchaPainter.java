@@ -47,7 +47,7 @@ public class SimpleCaptchaPainter extends CaptchaPainterAdapter implements Captc
 		imgGraphics.fillRect(0, 0, d.width, d.height);
 		
 		imgGraphics.setColor(getForegroundColor());
-		imgGraphics.drawString(text, 0, (d.height / 2) + imgGraphics.getFontMetrics().getDescent());
+		imgGraphics.drawString(text, 5, (d.height / 2) + imgGraphics.getFontMetrics().getDescent());
 		
 	}
 	
@@ -57,7 +57,7 @@ public class SimpleCaptchaPainter extends CaptchaPainterAdapter implements Captc
 	 */
 	@Override
 	public Dimension calculateDimension(Graphics g, String captchaText) {
-		return new Dimension(g.getFontMetrics().stringWidth(captchaText),
+		return new Dimension(g.getFontMetrics().stringWidth(captchaText)+10,
 				g.getFontMetrics().getHeight()+10);
 	}
 

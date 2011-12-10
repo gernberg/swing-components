@@ -394,14 +394,19 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		}
 
 		/**
-		 * Calculates the preferred size of the paint-area
+		 * Updates the size
 		 */
 		private void updateSize() {
-			Dimension dimension = getCaptchaPainter().calculateDimension(
-					getGraphics(), getCaptchaText());
-			setPreferredSize(new Dimension(dimension.width, dimension.height));
 			revalidate();
 			repaint();
+		}
+		
+		/**
+		 * Calculates the preferred size of the paint-area
+		 */
+		public Dimension getPreferredSize(){
+			return getCaptchaPainter().calculateDimension(
+					getGraphics(), getCaptchaText());
 		}
 
 		/**
@@ -416,6 +421,5 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		public void ancestorMoved(HierarchyEvent e) {
 
 		}
-
 	}
 }

@@ -8,7 +8,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.WindowConstants;
 
 import se.ernberg.components.simplecaptcha.CaptchaStatusListener;
@@ -19,7 +18,12 @@ import se.ernberg.components.simplecaptcha.SimpleCaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.SwedishCaptchaTextGenerator;
 
 public class ExampleWindow {
-	final static JPanel mainPanel = new JPanel();
+	final static JPanel mainPanel = new JPanel(){
+		public Dimension getPreferredSize(){
+			System.out.println("MP:"+super.getPreferredSize());
+			return super.getPreferredSize();
+		}
+	};;
 
 	public ExampleWindow() {
 
@@ -32,20 +36,41 @@ public class ExampleWindow {
 
 	private static void createAndShowGUI() {
 		// Create and set up the window.
-		JFrame frame = new JFrame("Super Captcha Test");
-		
+		JFrame frame = new JFrame("Super Captcha Test"){
+			public Dimension getPreferredSize(){
+				System.out.println("FR:"+super.getPreferredSize());
+				return super.getPreferredSize();
+			}
+		};;
+		SimpleCaptcha captcha;
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		
 		mainPanel.add(example1());
 		mainPanel.add(example2());
 		mainPanel.add(example3());
 		mainPanel.add(example4());
 		mainPanel.add(example5());
-		mainPanel.add(example6());
+		
+
+		// Sets the generated string length to 10 chars
+		captcha = new SimpleCaptcha(new SimpleCaptchaPainter(), new SimpleCaptchaTextGenerator(10));
+		mainPanel.add(captcha);
+
+		// Sets the generated string length to 10 chars and use only a,b,c
+		captcha = new SimpleCaptcha(new SimpleCaptchaTextGenerator(1, "abc"));
+		mainPanel.add(captcha);
+		
+		// Use only a,b,c and mix upper / lowercase
+		SimpleCaptchaTextGenerator textGenerator = new SimpleCaptchaTextGenerator("abc");
+		textGenerator.mixUpperAndLowerCase(true);
+		captcha = new SimpleCaptcha(textGenerator);
+		mainPanel.add(captcha);
+		
+		
 		frame.getContentPane().add(mainPanel);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		frame.pack();
 		frame.setVisible(true);
-
+		frame.pack();
 	}
 
 
@@ -65,19 +90,26 @@ public class ExampleWindow {
 	 * @return
 	 */
 	private static JPanel example2() {
-		JPanel panel = new JPanel();
+		JPanel panel = new JPanel(){
+			public Dimension getPreferredSize(){
+				System.out.println("EX2:"+super.getPreferredSize());
+				return super.getPreferredSize();
+			}
+		};
 		SimpleCaptcha captcha = new SimpleCaptcha();
 		final JButton button = new JButton("Ok");
 		button.setEnabled(false);
 		captcha.addCaptchaStatusUpdatedListener(new CaptchaStatusListener() {
 			@Override
 			public void captchaStatusUpdated(boolean isCorrect) {
+				// Focus the button 
 				button.setEnabled(isCorrect);
 				button.requestFocusInWindow();
 			}
 		});
 		panel.add(captcha);
 		panel.add(button);
+		panel.setLayout(new FlowLayout());
 		return panel;
 	}
 
@@ -115,7 +147,6 @@ public class ExampleWindow {
 	 */
 	private static JPanel example4() {
 		final JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 		
 		SimpleCaptcha captcha = new SimpleCaptcha(new SimpleCaptchaPainter(),
 				new SwedishCaptchaTextGenerator());
@@ -123,21 +154,6 @@ public class ExampleWindow {
 		captcha.showRefreshButton(false);
 		panel.add(captcha);
 
-		// Sets the generated string length to 10 chars
-		captcha = new SimpleCaptcha(new SimpleCaptchaPainter(), new SimpleCaptchaTextGenerator(10));
-		panel.add(captcha);
-
-		// Sets the generated string length to 10 chars and use only a,b,c
-		captcha = new SimpleCaptcha(new SimpleCaptchaTextGenerator(1, "abc"));
-		panel.add(captcha);
-		
-		// Use only a,b,c and mix upper / lowercase
-		SimpleCaptchaTextGenerator textGenerator = new SimpleCaptchaTextGenerator("abc");
-		textGenerator.mixUpperAndLowerCase(true);
-		captcha = new SimpleCaptcha(textGenerator);
-		panel.add(captcha);
-		
-		
 		return panel;
 	}
 
@@ -179,6 +195,7 @@ public class ExampleWindow {
 			}
 		});
 	}
+	
 	public static void main(String[] args) {
 		new ExampleWindow();
 	}
