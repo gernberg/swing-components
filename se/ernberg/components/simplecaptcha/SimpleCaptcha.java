@@ -371,6 +371,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 
 		/**
 		 * Paints the captchaText using the CaptchaPainter on the graphics
+		 * 
 		 * @param g
 		 */
 		@Override
@@ -400,13 +401,28 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 			revalidate();
 			repaint();
 		}
-		
+
 		/**
-		 * Calculates the preferred size of the paint-area
+		 * Calculates the preferred size of the component
+		 * 
+		 * @return preferred dimensions of captcha image
 		 */
-		public Dimension getPreferredSize(){
-			return getCaptchaPainter().calculateDimension(
-					getGraphics(), getCaptchaText());
+		@Override
+		public Dimension getPreferredSize() {
+			return getCaptchaPainter().calculateDimension(getGraphics(),
+					getCaptchaText());
+		}
+
+		/**
+		 * Calculates the minimum size of the component in order to make it work
+		 * (if it's resized too small it's possible that text will render
+		 * unreadable)
+		 * 
+		 * @return minimum size
+		 */
+		@Override
+		public Dimension getMinimumSize() {
+			return getPreferredSize();
 		}
 
 		/**

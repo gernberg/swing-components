@@ -18,13 +18,7 @@ import se.ernberg.components.simplecaptcha.SimpleCaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.SwedishCaptchaTextGenerator;
 
 public class ExampleWindow {
-	final static JPanel mainPanel = new JPanel(){
-		public Dimension getPreferredSize(){
-			System.out.println("MP:"+super.getPreferredSize());
-			return super.getPreferredSize();
-		}
-	};;
-
+	final static JPanel mainPanel = new JPanel();
 	public ExampleWindow() {
 
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -36,12 +30,7 @@ public class ExampleWindow {
 
 	private static void createAndShowGUI() {
 		// Create and set up the window.
-		JFrame frame = new JFrame("Super Captcha Test"){
-			public Dimension getPreferredSize(){
-				System.out.println("FR:"+super.getPreferredSize());
-				return super.getPreferredSize();
-			}
-		};;
+		JFrame frame = new JFrame("Super Captcha Test");
 		SimpleCaptcha captcha;
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
 		
@@ -50,7 +39,7 @@ public class ExampleWindow {
 		mainPanel.add(example3());
 		mainPanel.add(example4());
 		mainPanel.add(example5());
-		
+		mainPanel.add(example6());
 
 		// Sets the generated string length to 10 chars
 		captcha = new SimpleCaptcha(new SimpleCaptchaPainter(), new SimpleCaptchaTextGenerator(10));
@@ -109,7 +98,6 @@ public class ExampleWindow {
 		});
 		panel.add(captcha);
 		panel.add(button);
-		panel.setLayout(new FlowLayout());
 		return panel;
 	}
 
