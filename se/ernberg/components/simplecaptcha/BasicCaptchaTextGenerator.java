@@ -36,7 +36,7 @@ public class BasicCaptchaTextGenerator implements CaptchaTextGenerator {
 	 * Tells if we should mix upper and lowercase
 	 */
 	private boolean mixUpperAndLowerCase = false;
-
+	
 	/**
 	 * If no options are provided - the standardLength is used
 	 */

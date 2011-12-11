@@ -77,9 +77,11 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 */
 	public static final long CAPTCHA_GENERATED = -1;
 	/**
-	 * If the refresh-button is clicked, -2 is sent to observers
+	 * Is used when regenerating strings - may be used by Observers for various
+	 * reasons
 	 */
-	public static final long CAPTCHA_REGENERATED = -2;
+	private long lastGenerationID = 0;
+
 	/**
 	 * Creating a new SimpleCaptcha, if no TextGenerator and/or CaptchaPainter
 	 * is specified the getDefaultPainter() and/or getDefaultTextGenerator() are
@@ -129,7 +131,8 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				generateCaptchaText(CAPTCHA_REGENERATED);
+				textfield.setText("");
+				generateCaptchaText(lastGenerationID++);
 			}
 		});
 
@@ -139,6 +142,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		addCaptchaStatusUpdatedListener(this);
 		generateCaptchaText(CAPTCHA_GENERATED);
 	}
+
 	/**
 	 * Returns the default CaptchaPainter
 	 * 
@@ -166,23 +170,30 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	public void addCaptchaStatusUpdatedListener(CaptchaStatusListener listener) {
 		captchaStatusListeners.add(listener);
 	}
+
 	/**
-	 * Removes a listener that recieves an boolean everytime the users types in the
-	 * textfield
+	 * Removes a listener that recieves an boolean everytime the users types in
+	 * the textfield
 	 * 
 	 * @param listener
 	 */
-	public void removeCaptchaStatusUpdatedListener(CaptchaStatusListener listener) {
+	public void removeCaptchaStatusUpdatedListener(
+			CaptchaStatusListener listener) {
 		captchaStatusListeners.remove(listener);
 	}
+
 	/**
-	 * Adds an observer that recieves notifications when a new string is generated. 
+	 * Adds an observer that recieves notifications when a new string is
+	 * generated.
+	 * 
 	 * @param observer
 	 */
 	public void addCaptchaObserver(CaptchaObserver observer) {
 		captchaObservers.add(observer);
-		
-	}/**
+
+	}
+
+	/**
 	 * Removes an observer
 	 * 
 	 * @param observer
@@ -214,10 +225,14 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 			captchaStatusListeners.get(i).statusUpdated(isCorrect);
 		}
 	}
-	// TODO:kommentera 
-	private void notifyGenerationObservers(long textGenerationID) {
+
+	/**
+	 * Notifies the 
+	 * @param textGenerationID
+	 */
+	private void notifyTextGenerationObservers(long textGenerationID) {
 		for (int i = captchaObservers.size() - 1; i >= 0; i--) {
-			captchaObservers.get(i).regenerationComplete(textGenerationID);
+			captchaObservers.get(i).textGenerationComplete(textGenerationID);
 		}
 	}
 
@@ -289,38 +304,6 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	}
 
 	/**
-	 * Generates the captchaText, useful if the CaptchaTextGenerator or
-	 * CaptchaPainter renders unreadable.
-	 */
-	public void generateCaptchaText(long textGenerationID) {
-		(new GenerationProcess(textGenerationID)).start();
-	}
-
-	private class GenerationProcess extends Thread{
-		private final long textGenerationID;
-
-		private GenerationProcess(long textGenerationID) {
-			this.textGenerationID = textGenerationID;
-		}
-
-		@Override
-		public void run() {
-			System.out.println("-------------------");
-			captchaText = captchaTextGenerator.generateString();
-			System.out.println("Inte klar...");
-			System.out.println("Observers");
-			textfield.setColumns(captchaText.length());
-			textfield.setText("");
-			captchaImage.validate();
-			textChanged();
-			somethingChanged();
-			notifyGenerationObservers(textGenerationID);
-		}
-
-
-	}
-
-	/**
 	 * Is called when something has changed - repaints and revalidates the
 	 * component
 	 */
@@ -332,10 +315,11 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 
 	/**
 	 * Returns the captcha text, or an empty string if no captcha exists
+	 * 
 	 * @return captchaText
 	 */
 	protected String getCaptchaText() {
-		if(captchaText==null)
+		if (captchaText == null)
 			return "";
 		return captchaText;
 	}
@@ -360,6 +344,16 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 */
 	public CaptchaPainter getCaptchaPainter() {
 		return captchaPainter;
+	}
+
+	/**
+	 * Returns the last generation id, used by Observers (increase by one every
+	 * time refresh-button is clicked.)
+	 * 
+	 * @return
+	 */
+	public long getLastGenerationID() {
+		return lastGenerationID;
 	}
 
 	/**
@@ -396,7 +390,36 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	public void showRefreshButton(boolean showRefreshButton) {
 		refreshButton.setVisible(showRefreshButton);
 	}
+	/**
+	 * Generates the captchaText, useful if the CaptchaTextGenerator or
+	 * CaptchaPainter renders unreadable.
+	 */
+	public void generateCaptchaText(long textGenerationID) {
+		(new CaptchaTextGenerationThread(textGenerationID)).start();
+	}
+	/**
+	 * 
+	 *
+	 * @author Gustav Ernberg <gustav.ernberg@gmail.com>
+	 */
+	private class CaptchaTextGenerationThread extends Thread {
+		private final long textGenerationID;
 
+		private CaptchaTextGenerationThread(long textGenerationID) {
+			this.textGenerationID = textGenerationID;
+		}
+
+		@Override
+		public void run() {
+			captchaText = captchaTextGenerator.generateString();
+			textfield.setColumns(captchaText.length());
+			captchaImage.validate();
+			textChanged();
+			somethingChanged();
+			notifyTextGenerationObservers(textGenerationID);
+		}
+
+	}
 	/**
 	 * Tells the CaptchaPainter what to paint and helps Captcha to check the
 	 * current size of the captchaImage component

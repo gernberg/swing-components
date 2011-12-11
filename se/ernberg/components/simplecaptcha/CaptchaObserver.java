@@ -1,5 +1,5 @@
 package se.ernberg.components.simplecaptcha;
 
 public interface CaptchaObserver {
-	public void regenerationComplete(long id);
+	public void textGenerationComplete(long id);
 }

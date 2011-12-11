@@ -74,7 +74,7 @@ public class ExampleWindow {
 		captcha.addCaptchaObserver(new CaptchaObserver() {
 			
 			@Override
-			public void regenerationComplete(long id) {
+			public void textGenerationComplete(long id) {
 				System.out.println(id);
 				if(id == SimpleCaptcha.CAPTCHA_GENERATED)
 					frame.pack();
