@@ -3,7 +3,7 @@ package se.ernberg.components.simplecaptcha;
 import se.ernberg.math.RandomFunctions;
 
 /**
- * This is an example on how to create an own {@link SimpleCaptchaTextGenerator}
+ * This is an example on how to create an own {@link CaptchaTextGenerator}
  * class. 
  * 
  * This specific example generates one of the following Swedish words:
@@ -11,7 +11,7 @@ import se.ernberg.math.RandomFunctions;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class SwedishCaptchaTextGenerator implements SimpleCaptchaTextGenerator {
+public class SwedishCaptchaTextGenerator implements CaptchaTextGenerator {
 	private static String[] words = { "katt", "hund", "fisk", "korv", "bröd" };
 
 	/**

@@ -13,7 +13,7 @@ import se.ernberg.math.RandomFunctions;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class DefaultCaptchaTextGenerator implements SimpleCaptchaTextGenerator {
+public class BasicCaptchaTextGenerator implements CaptchaTextGenerator {
 	/**
 	 * The standard length that is used if no arguments are passed to the
 	 * Constructor
@@ -40,41 +40,41 @@ public class DefaultCaptchaTextGenerator implements SimpleCaptchaTextGenerator {
 	/**
 	 * If no options are provided - the standardLength is used
 	 */
-	public DefaultCaptchaTextGenerator() {
+	public BasicCaptchaTextGenerator() {
 		this(defaultLength);
 	}
 
 	/**
-	 * Creates a new instance of {@link DefaultCaptchaTextGenerator} and gives
+	 * Creates a new instance of {@link BasicCaptchaTextGenerator} and gives
 	 * the possibility to specify how many characters the generated string
 	 * should be.
 	 * 
 	 * @param stringLength
 	 */
-	public DefaultCaptchaTextGenerator(int stringLength) {
+	public BasicCaptchaTextGenerator(int stringLength) {
 		this(stringLength, defaultChars);
 	}
 
 	/**
-	 * Creates a new instance of {@link DefaultCaptchaTextGenerator} and gives
+	 * Creates a new instance of {@link BasicCaptchaTextGenerator} and gives
 	 * the possibility to specify which characters to use when generating the
 	 * captcha string.
 	 * 
 	 * @param stringLength
 	 */
-	public DefaultCaptchaTextGenerator(String useChars) {
+	public BasicCaptchaTextGenerator(String useChars) {
 		this(defaultLength, useChars);
 	}
 
 	/**
-	 * Creates a new instance of {@link DefaultCaptchaTextGenerator} and gives
+	 * Creates a new instance of {@link BasicCaptchaTextGenerator} and gives
 	 * the possibilty to specify length of the generated string and which
 	 * characters to use when generating the captcha string.
 	 * 
 	 * @param stringLength
 	 * @param useChars
 	 */
-	public DefaultCaptchaTextGenerator(int stringLength, String useChars) {
+	public BasicCaptchaTextGenerator(int stringLength, String useChars) {
 		super();
 		this.stringLength = stringLength;
 		this.useChars = useChars;

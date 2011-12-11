@@ -16,5 +16,6 @@ public interface CaptchaStatusListener extends EventListener{
 	 * @param isCorrect
 	 *            if the user input in textfield corresponds to the captchaImage
 	 */
-	public void captchaStatusUpdated(boolean isCorrect);
+	public void statusUpdated(boolean isCorrect);
+	
 }

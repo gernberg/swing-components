@@ -6,7 +6,7 @@ package se.ernberg.components.simplecaptcha;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public interface SimpleCaptchaTextGenerator {
+public interface CaptchaTextGenerator {
 	/**
 	 * Should generate a random string 
 	 * @return a random generated string

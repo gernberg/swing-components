@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
  * 
  * @author Gustav Ernberg <gustav.ernberg@gmail.com>
  */
-public class SimpleCaptchaPainter extends CaptchaPainterAdapter implements CaptchaPainter {
+public class BasicCaptchaPainter extends CaptchaPainterAdapter implements CaptchaPainter {
 	private Color foregroundColor;
 	private Color backgroundColor;
 
@@ -22,7 +22,7 @@ public class SimpleCaptchaPainter extends CaptchaPainterAdapter implements Captc
 	 * If no arguments are passed, green and black are chosen as foreground /
 	 * background color
 	 */
-	public SimpleCaptchaPainter() {
+	public BasicCaptchaPainter() {
 		this(Color.GREEN, Color.BLACK);
 	}
 
@@ -30,7 +30,7 @@ public class SimpleCaptchaPainter extends CaptchaPainterAdapter implements Captc
 	 * @param foregroundColor
 	 * @param backgroundColor
 	 */
-	public SimpleCaptchaPainter(Color foregroundColor, Color backgroundColor) {
+	public BasicCaptchaPainter(Color foregroundColor, Color backgroundColor) {
 		super();
 		this.foregroundColor = foregroundColor;
 		this.backgroundColor = backgroundColor;
