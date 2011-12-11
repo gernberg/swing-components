@@ -64,7 +64,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	/**
 	 * The generator that is used for generating captcha text strings
 	 */
-	private CaptchaTextGenerator captchaTextGenerator;
+	private SimpleCaptchaTextGenerator captchaTextGenerator;
 
 	/**
 	 * Calling the constructor without arguments creates an Captcha instance
@@ -89,7 +89,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * 
 	 * @param captchaTextGenerator
 	 */
-	public SimpleCaptcha(CaptchaTextGenerator captchaTextGenerator) {
+	public SimpleCaptcha(SimpleCaptchaTextGenerator captchaTextGenerator) {
 		this(getDefaultPainter(), captchaTextGenerator);
 	}
 
@@ -107,8 +107,8 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * 
 	 * @return
 	 */
-	private static CaptchaTextGenerator getDefaultTextGenerator() {
-		return new SimpleCaptchaTextGenerator();
+	private static SimpleCaptchaTextGenerator getDefaultTextGenerator() {
+		return new DefaultCaptchaTextGenerator();
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * @param captchaTextGenerator
 	 */
 	public SimpleCaptcha(CaptchaPainter captchaPainter,
-			CaptchaTextGenerator captchaTextGenerator) {
+			SimpleCaptchaTextGenerator captchaTextGenerator) {
 		this.captchaPainter = captchaPainter;
 		this.captchaTextGenerator = captchaTextGenerator;
 		captchaText = captchaTextGenerator.generateString();
@@ -292,9 +292,9 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	}
 
 	/**
-	 * @return {@link CaptchaTextGenerator}
+	 * @return {@link SimpleCaptchaTextGenerator}
 	 */
-	public CaptchaTextGenerator getCaptchaTextGenerator() {
+	public SimpleCaptchaTextGenerator getCaptchaTextGenerator() {
 		return captchaTextGenerator;
 	}
 
@@ -314,7 +314,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * @param captchaTextGenerator
 	 */
 	public void setCaptchaTextGenerator(
-			CaptchaTextGenerator captchaTextGenerator) {
+			SimpleCaptchaTextGenerator captchaTextGenerator) {
 		checkIfRepaintIsNeeded(this.captchaTextGenerator, captchaTextGenerator);
 		this.captchaTextGenerator = captchaTextGenerator;
 	}

@@ -9,14 +9,16 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
 import se.ernberg.components.simplecaptcha.CaptchaStatusListener;
-import se.ernberg.components.simplecaptcha.CaptchaTextGenerator;
+import se.ernberg.components.simplecaptcha.SimpleCaptchaTextGenerator;
+import se.ernberg.components.simplecaptcha.ColorCaptchaPainter;
 import se.ernberg.components.simplecaptcha.SimpleCaptcha;
 import se.ernberg.components.simplecaptcha.SimpleCaptchaPainter;
-import se.ernberg.components.simplecaptcha.SimpleCaptchaTextGenerator;
+import se.ernberg.components.simplecaptcha.DefaultCaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.SwedishCaptchaTextGenerator;
 
 public class ExampleWindow {
 	final static JPanel mainPanel = new JPanel();
+
 	public ExampleWindow() {
 
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -31,7 +33,7 @@ public class ExampleWindow {
 		JFrame frame = new JFrame("Super Captcha Test");
 		SimpleCaptcha captcha;
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
-		
+
 		mainPanel.add(example1());
 		mainPanel.add(example2());
 		mainPanel.add(example3());
@@ -40,26 +42,26 @@ public class ExampleWindow {
 		mainPanel.add(example6());
 
 		// Sets the generated string length to 10 chars
-		captcha = new SimpleCaptcha(new SimpleCaptchaPainter(), new SimpleCaptchaTextGenerator(10));
+		captcha = new SimpleCaptcha(new SimpleCaptchaPainter(),
+				new DefaultCaptchaTextGenerator(10));
 		mainPanel.add(captcha);
 
 		// Sets the generated string length to 10 chars and use only a,b,c
-		captcha = new SimpleCaptcha(new SimpleCaptchaTextGenerator(1, "abc"));
+		captcha = new SimpleCaptcha(new DefaultCaptchaTextGenerator(1, "abc"));
 		mainPanel.add(captcha);
-		
+
 		// Use only a,b,c and mix upper / lowercase
-		SimpleCaptchaTextGenerator textGenerator = new SimpleCaptchaTextGenerator("abc");
+		DefaultCaptchaTextGenerator textGenerator = new DefaultCaptchaTextGenerator(
+				"abc");
 		textGenerator.mixUpperAndLowerCase(true);
 		captcha = new SimpleCaptcha(textGenerator);
 		mainPanel.add(captcha);
-		
-		
+
 		frame.getContentPane().add(mainPanel);
 		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 		frame.pack();
 	}
-
 
 	/**
 	 * It's really this easy to add a SuperCaptcha component
@@ -84,9 +86,11 @@ public class ExampleWindow {
 		captcha.addCaptchaStatusUpdatedListener(new CaptchaStatusListener() {
 			@Override
 			public void captchaStatusUpdated(boolean isCorrect) {
-				// Focus the button 
-				button.setEnabled(isCorrect);
-				button.requestFocusInWindow();
+				// Focus the button
+				if (isCorrect) {
+					button.setEnabled(isCorrect);
+					button.requestFocusInWindow();
+				}
 			}
 		});
 		panel.add(captcha);
@@ -119,7 +123,6 @@ public class ExampleWindow {
 		panel.add(button);
 		return panel;
 	}
-	
 
 	/**
 	 * An example on how to configure the SimpleCaptcha
@@ -128,10 +131,14 @@ public class ExampleWindow {
 	 */
 	private static JPanel example4() {
 		final JPanel panel = new JPanel();
-		
+
 		SimpleCaptcha captcha = new SimpleCaptcha(new SimpleCaptchaPainter(),
 				new SwedishCaptchaTextGenerator());
-		
+
+		// Since the component extends JPanel, there are much room for
+		// customization (eg. setting layout)
+		captcha.setLayout(new BoxLayout(captcha, BoxLayout.PAGE_AXIS));
+
 		captcha.showRefreshButton(false);
 		panel.add(captcha);
 
@@ -147,7 +154,7 @@ public class ExampleWindow {
 	 */
 	private static JPanel example5() {
 		JPanel panel = new JPanel();
-		
+
 		final SimpleCaptcha captcha = new SimpleCaptcha();
 		captcha.addCaptchaStatusUpdatedListener(new CaptchaStatusListener() {
 			@Override
@@ -155,28 +162,31 @@ public class ExampleWindow {
 				captcha.showRefreshButton(!isCorrect);
 				if (isCorrect) {
 					captcha.setPainter(new SimpleCaptchaPainter());
+				} else {
+					captcha.setPainter(new ColorCaptchaPainter());
 				}
 			}
 		});
-		
+
 		panel.add(captcha);
 		return panel;
 	}
 
 	/**
 	 * Example on how to create a custom Text Generator on the fly
+	 * 
 	 * @return
 	 */
 	private static Component example6() {
-		return new SimpleCaptcha(new CaptchaTextGenerator() {
-			
+		return new SimpleCaptcha(new SimpleCaptchaTextGenerator() {
+
 			@Override
 			public String generateString() {
 				return "foo";
 			}
 		});
 	}
-	
+
 	public static void main(String[] args) {
 		new ExampleWindow();
 	}
