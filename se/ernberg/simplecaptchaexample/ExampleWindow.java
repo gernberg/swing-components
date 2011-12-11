@@ -6,16 +6,15 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+import se.ernberg.components.simplecaptcha.BasicCaptchaPainter;
+import se.ernberg.components.simplecaptcha.BasicCaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.CaptchaObserver;
 import se.ernberg.components.simplecaptcha.CaptchaStatusListener;
 import se.ernberg.components.simplecaptcha.CaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.ColorCaptchaPainter;
 import se.ernberg.components.simplecaptcha.SimpleCaptcha;
-import se.ernberg.components.simplecaptcha.BasicCaptchaPainter;
-import se.ernberg.components.simplecaptcha.BasicCaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.SwedishCaptchaTextGenerator;
 
 public class ExampleWindow {

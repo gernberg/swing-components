@@ -311,7 +311,6 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			break;
 		}
 		centerImage();
-		System.out.println(getCenterX() + "|" + getCenterY());
 		fireUpdateActions();
 	}
 
@@ -472,12 +471,13 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	}
 
 	/**
-	 * Zoom
+	 * Zooms in on a particular position.
 	 * 
 	 * @param e
 	 */
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
+		// the getUnitsToScroll is reversed (excepted behavior by user)
 		zoomIn(e.getX(), e.getY(), -e.getUnitsToScroll());
 	}
 
