@@ -296,7 +296,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * @param oldObject
 	 * @param newObject
 	 */
-	private void checkIfRepaintIsNeeded(Object oldObject, Object newObject) {
+	private void repaintIfNeeded(Object oldObject, Object newObject) {
 		if (!oldObject.equals(newObject)) {
 			revalidate();
 			repaint();
@@ -366,7 +366,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 */
 	public void setCaptchaTextGenerator(
 			CaptchaTextGenerator captchaTextGenerator) {
-		checkIfRepaintIsNeeded(this.captchaTextGenerator, captchaTextGenerator);
+		repaintIfNeeded(this.captchaTextGenerator, captchaTextGenerator);
 		this.captchaTextGenerator = captchaTextGenerator;
 	}
 
@@ -378,7 +378,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * @param captchaPainter
 	 */
 	public void setPainter(CaptchaPainter captchaPainter) {
-		checkIfRepaintIsNeeded(this.captchaPainter, captchaPainter);
+		repaintIfNeeded(this.captchaPainter, captchaPainter);
 		this.captchaPainter = captchaPainter;
 	}
 
