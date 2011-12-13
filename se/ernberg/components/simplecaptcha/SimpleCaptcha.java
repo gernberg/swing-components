@@ -147,7 +147,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * 
 	 * @return
 	 */
-	private static CaptchaPainter getDefaultPainter() {
+	protected static CaptchaPainter getDefaultPainter() {
 		return new ColorCaptchaPainter();
 	}
 
@@ -156,7 +156,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * 
 	 * @return
 	 */
-	private static CaptchaTextGenerator getDefaultTextGenerator() {
+	protected static CaptchaTextGenerator getDefaultTextGenerator() {
 		return new BasicCaptchaTextGenerator();
 	}
 
@@ -363,9 +363,8 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * 
 	 * @param captchaTextGenerator
 	 */
-	public void setCaptchaTextGenerator(
+	public void setTextGenerator(
 			CaptchaTextGenerator captchaTextGenerator) {
-		repaintIfNeeded(this.captchaTextGenerator, captchaTextGenerator);
 		this.captchaTextGenerator = captchaTextGenerator;
 	}
 
@@ -397,7 +396,8 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		(new CaptchaTextGenerationThread(textGenerationID)).start();
 	}
 	/**
-	 * 
+	 * A thread that generates a new Captcha string and updates the component 
+	 * and notifies observers. 
 	 *
 	 * @author Gustav Ernberg <gustav.ernberg@gmail.com>
 	 */

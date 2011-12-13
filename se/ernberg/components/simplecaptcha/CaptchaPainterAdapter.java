@@ -16,23 +16,26 @@ public abstract class CaptchaPainterAdapter implements CaptchaPainter{
 	 */
 	@Override
 	public void paint(Graphics g, String text, Dimension d) {
-		if (needsRegeneratedImage){
-			generateImage(g, text, d);
+		if (needsRegeneratedImage || image==null){
+			image = generateImage(g, text, d);
 			// Now we don't  need to regenerate for a while
 			needsRegeneratedImage=false;
 		}
-		g.drawImage(getImage(), 0, 0, null);
+		g.drawImage(image, 0, 0, null);
 	}
 
-
-	protected abstract void generateImage(Graphics g, String text, Dimension d);
+	/**
+	 * Should return an image that will be used as captcha image
+	 * @param g
+	 * @param text
+	 * @param d
+	 * @return Image 
+	 */
+	protected abstract Image generateImage(Graphics g, String text, Dimension d);
 
 	@Override
 	public void forceRegeneratedImage() {
 		needsRegeneratedImage = true;
 	}
 	
-	protected Image getImage() {
-		return image;
-	}
 }

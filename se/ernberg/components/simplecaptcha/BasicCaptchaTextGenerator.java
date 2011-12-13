@@ -104,4 +104,13 @@ public class BasicCaptchaTextGenerator implements CaptchaTextGenerator {
 	public void mixUpperAndLowerCase(boolean mixUpperAndLowerCase) {
 		this.mixUpperAndLowerCase = mixUpperAndLowerCase;
 	}
+	
+	/**
+	 * Sets the length of the string to be generated
+	 * @param stringLength
+	 */
+	public void setStringLength(int stringLength) {
+		this.stringLength = stringLength;
+	}
+
 }

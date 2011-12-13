@@ -1,9 +1,11 @@
 package se.ernberg.components.simplecaptcha;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
@@ -23,9 +25,15 @@ public class ColorCaptchaPainter extends CaptchaPainterAdapter {
 	 */
 	private static final int maximumLetterSpacing = 5;
 
-	@Override
-	protected void generateImage(Graphics g, String text, Dimension d) {
+	/**
+	 * The background color used. Is randomly generated upon instantiation. This
+	 * exists since we want random background-colors but we don't want to use a
+	 * new one every time the image gets generated (distracting for users).
+	 */
+	private Color backgroundColor = RandomFunctions.randomColor(150, 255);
 
+	@Override
+	protected Image generateImage(Graphics g, String text, Dimension d) {
 		image = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2d = (Graphics2D) image.getGraphics();
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -38,7 +46,7 @@ public class ColorCaptchaPainter extends CaptchaPainterAdapter {
 		FontMetrics fm = g.getFontMetrics();
 
 		// Draws a background with a random color
-		g2d.setColor(RandomFunctions.randomColor(150, 255));
+		g2d.setColor(backgroundColor);
 		g2d.fillRect(0, 0, d.width, d.height);
 
 		// Adds some lines
@@ -64,8 +72,8 @@ public class ColorCaptchaPainter extends CaptchaPainterAdapter {
 					d.height) / 8));
 			left += fm.charWidth(c) + maximumLetterSpacing * Math.random();
 		}
+		return image;
 	}
-
 
 	/**
 	 * Calculates the width required to fit the captchaText
@@ -80,7 +88,7 @@ public class ColorCaptchaPainter extends CaptchaPainterAdapter {
 		int y = g.getFontMetrics().getHeight() * 2;
 		return new Dimension(x, y);
 	}
-
-
+	
+	
 
 }

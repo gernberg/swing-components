@@ -1,6 +1,7 @@
 package se.ernberg.zoomableimageexample;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Image;
@@ -52,7 +53,19 @@ public class ExampleWindow {
 		// It's possible to set a preferred size, if none is specified. The size
 		// of the image is the the preferredSize by default
 		zoomableImage.setPreferredSize(new Dimension(100, 100));
-
+		 
+		// Example on how to implement a ZoomableImageChangedListener
+		ZoomableImageChangedListener zoomColourChanger = new
+				ZoomableImageChangedListener(){ 
+					public void viewUpdated(ZoomableImageEvent e){
+						if(e.getZoom()>=1){
+							e.getSource().setBackground(Color.GREEN);
+						}else{
+							e.getSource().setBackground(Color.RED);
+						}
+					}
+				};
+		zoomableImage.addZoomableChangeListener(zoomColourChanger);
 		panel.setLayout(new BorderLayout(5, 5));
 		panel.add(new ZoomableImageStandardToolbar(zoomableImage), BorderLayout.NORTH);
 		panel.add(zoomableImage, BorderLayout.CENTER);

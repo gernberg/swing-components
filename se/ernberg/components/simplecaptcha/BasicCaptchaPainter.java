@@ -3,6 +3,7 @@ package se.ernberg.components.simplecaptcha;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 /**
@@ -38,8 +39,8 @@ public class BasicCaptchaPainter extends CaptchaPainterAdapter implements Captch
 	
 
 	@Override
-	protected void generateImage(Graphics g, String text, Dimension d) {
-		image = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
+	protected Image generateImage(Graphics g, String text, Dimension d) {
+		Image image = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
 		Graphics imgGraphics = image.getGraphics();
 		
 		
@@ -48,7 +49,7 @@ public class BasicCaptchaPainter extends CaptchaPainterAdapter implements Captch
 		
 		imgGraphics.setColor(getForegroundColor());
 		imgGraphics.drawString(text, 5, (d.height / 2) + imgGraphics.getFontMetrics().getDescent());
-		
+		return image;
 	}
 	
 	

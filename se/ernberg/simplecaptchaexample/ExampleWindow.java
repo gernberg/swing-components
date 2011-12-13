@@ -11,6 +11,7 @@ import javax.swing.WindowConstants;
 import se.ernberg.components.simplecaptcha.BasicCaptchaPainter;
 import se.ernberg.components.simplecaptcha.BasicCaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.CaptchaObserver;
+import se.ernberg.components.simplecaptcha.CaptchaPainter;
 import se.ernberg.components.simplecaptcha.CaptchaStatusListener;
 import se.ernberg.components.simplecaptcha.CaptchaTextGenerator;
 import se.ernberg.components.simplecaptcha.ColorCaptchaPainter;
@@ -18,9 +19,10 @@ import se.ernberg.components.simplecaptcha.SimpleCaptcha;
 import se.ernberg.components.simplecaptcha.SwedishCaptchaTextGenerator;
 
 public class ExampleWindow {
-	final static JPanel mainPanel = new JPanel();
-	final static JFrame frame = new JFrame("Super Captcha Test");
 
+	final JPanel mainPanel = new JPanel();
+	final JFrame frame = new JFrame("Super Captcha Test");
+	
 	public ExampleWindow() {
 
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -30,7 +32,7 @@ public class ExampleWindow {
 		});
 	}
 
-	private static void createAndShowGUI() {
+	private void createAndShowGUI() {
 		// Create and set up the window.
 		SimpleCaptcha captcha;
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
@@ -51,16 +53,11 @@ public class ExampleWindow {
 		// Sets the generated string length to 10 chars and use only a,b,c
 		captcha = new SimpleCaptcha(new BasicCaptchaTextGenerator(1, "abc"));
 		mainPanel.add(captcha);
-		
-		
-		mainPanel.add(captcha);
-		
 		// Creates a SimpleCaptcha that has a slow textGenerator 
 		captcha = new SimpleCaptcha(new CaptchaTextGenerator() {
 			
 			@Override
 			public String generateString() {
-				System.out.println("Hittar på saker...");
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -74,7 +71,6 @@ public class ExampleWindow {
 			
 			@Override
 			public void textGenerationComplete(long id) {
-				System.out.println(id);
 				if(id == SimpleCaptcha.CAPTCHA_GENERATED)
 					frame.pack();
 			}
@@ -189,13 +185,15 @@ public class ExampleWindow {
 
 		final SimpleCaptcha captcha = new SimpleCaptcha();
 		captcha.addCaptchaStatusUpdatedListener(new CaptchaStatusListener() {
+			private CaptchaPainter colorPainter = new ColorCaptchaPainter();
+			private CaptchaTextGenerator basicText = new BasicCaptchaTextGenerator();
 			@Override
 			public void statusUpdated(boolean isCorrect) {
 				captcha.showRefreshButton(!isCorrect);
 				if (isCorrect) {
-					captcha.setPainter(new BasicCaptchaPainter());
+					captcha.setTextGenerator(basicText);
 				} else {
-					captcha.setPainter(new ColorCaptchaPainter());
+					captcha.setPainter(colorPainter);
 				}
 			}
 		});

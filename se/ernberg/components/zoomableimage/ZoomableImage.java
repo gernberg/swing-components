@@ -157,7 +157,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	/**
 	 * Sets the initial position of the image to 0,0
 	 */
-	double x, y = 0;
+	int x, y = 0;
 	/**
 	 * Sets the initail mouse wheel scroll speed to 0.005
 	 */
@@ -173,6 +173,10 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 */
 	private double fastZoomSpeed = 100;
 
+	/**
+	 * The minimum Zoom level
+	 */
+	private double minimumZoomLevel = 0.01;
 	/**
 	 * ZoomableImage is basically an image component with zoom and pan functions
 	 * enabled
@@ -210,16 +214,16 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 * Zooms out the image at center position (for the pane) with amount defined
 	 * by fastZoom variable
 	 */
-	protected void zoomOut() {
-		zoomIn(getWidth() / 2, getHeight() / 2, -fastZoomSpeed);
+	public void zoomOut() {
+		zoom(getWidth() / 2, getHeight() / 2, -fastZoomSpeed);
 	}
 
 	/**
 	 * Zooms in the image at center position (for the pane) with amount defined
 	 * by fastZoom variable
 	 */
-	protected void zoomIn() {
-		zoomIn(getWidth() / 2, getHeight() / 2, fastZoomSpeed);
+	public void zoomIn() {
+		zoom(getWidth() / 2, getHeight() / 2, fastZoomSpeed);
 	}
 
 	/**
@@ -318,8 +322,8 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 * Centers the image according to current zoom-level
 	 */
 	private void centerImage() {
-		y = getCenterY();
-		x = getCenterX();
+		y = (int) getCenterY();
+		x = (int) getCenterX();
 	}
 
 	/**
@@ -365,7 +369,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 * 
 	 * @return
 	 */
-	private int getZoomedImageHeight() {
+	public int getZoomedImageHeight() {
 		return (int) (image.getWidth(this) * zoom);
 	}
 
@@ -374,7 +378,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 * 
 	 * @return
 	 */
-	private int getZoomedImageWidth() {
+	public int getZoomedImageWidth() {
 		return (int) (image.getWidth(this) * zoom);
 	}
 
@@ -388,13 +392,29 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 * @param unitsToScroll
 	 *            how
 	 */
-	private void zoomIn(int x, int y, double unitsToScroll) {
+	public void zoom(int x, int y, double unitsToScroll) {
+		double newZoom = zoom * (1 + unitsToScroll * mouseWheelZoomSpeed);
+		setZoom(x,y,newZoom);
+	}
+
+	/**
+	 * Sets zoom-level for the image at given x,y coordinate
+	 * 
+	 * @param x
+	 *            coordinate in pane (not image)
+	 * @param y
+	 *            coordinate in pane (not image)
+	 * @param newZoom
+	 *            how
+	 */
+	public void setZoom(int x, int y, double newZoom) {
 		userStartedInteracting = true;
 		double centerx = Math.ceil((x - this.x) / zoom);
 		double centery = Math.ceil((y - this.y) / zoom);
-		zoom += zoom * unitsToScroll * mouseWheelZoomSpeed;
-		if (zoom < 0.01)
-			zoom = 0.01;
+		zoom = newZoom;
+		// no point in making images this small
+		if (zoom < minimumZoomLevel)
+			zoom = minimumZoomLevel;
 		int centerPointX = x;
 		int centerPointY = y;
 
@@ -432,7 +452,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 		for (int i = zoomableChangeListeners.size() - 1; i >= 0; i--) {
 			zoomableChangeListeners.get(i).viewUpdated(
 					new ZoomableImageEvent((int) x, (int) y, getWidth(),
-							getHeight(), zoom));
+							getHeight(), zoom, this));
 		}
 		// If the image moved, we are most likely needed to repaint the
 		// component
@@ -478,7 +498,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		// the getUnitsToScroll is reversed (excepted behavior by user)
-		zoomIn(e.getX(), e.getY(), -e.getUnitsToScroll());
+		zoom(e.getX(), e.getY(), -e.getUnitsToScroll());
 	}
 
 	/**
@@ -505,7 +525,7 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 			if ((lastClicked + 1000) > System.currentTimeMillis()) {
 				switch (e.getButton()) {
 				case MouseEvent.BUTTON1:
-					zoomIn(e.getX(), e.getY(), fastZoomSpeed);
+					zoom(e.getX(), e.getY(), fastZoomSpeed);
 					break;
 				default:
 					break;
@@ -567,5 +587,33 @@ public class ZoomableImage extends JComponent implements MouseWheelListener,
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
+	}
+	/**
+	 * Gets the minimum Zoom level used
+	 * @return
+	 */
+	public double getMinimumZoomLevel() {
+		return minimumZoomLevel;
+	}
+	/**
+	 * Sets the minimum Zoom level
+	 * @param minimumZoomLevel
+	 */
+	public void setMinimumZoomLevel(double minimumZoomLevel) {
+		this.minimumZoomLevel = minimumZoomLevel;
+	}
+	/**
+	 * Sets the x position.
+	 * @param x
+	 */
+	public void setX(int x) {
+		this.x = x;
+	}
+	/**
+	 * Sets the y position
+	 * @param y
+	 */
+	public void setY(int y) {
+		this.y = y;
 	}
 }
