@@ -12,4 +12,5 @@ public interface CaptchaTextGenerator {
 	 * @return a random generated string
 	 */
 	public String generateString();
+	
 }

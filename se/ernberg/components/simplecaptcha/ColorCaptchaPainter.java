@@ -75,6 +75,8 @@ public class ColorCaptchaPainter extends CaptchaPainterAdapter {
 		return image;
 	}
 
+	
+	
 	/**
 	 * Calculates the width required to fit the captchaText
 	 * 
@@ -89,6 +91,31 @@ public class ColorCaptchaPainter extends CaptchaPainterAdapter {
 		return new Dimension(x, y);
 	}
 	
+	/**
+	 * Calculates the width required to paint the loading text
+	 */
+	@Override
+	public Dimension calculateLoadingDimension(Graphics g, String captchaText) {
+		return calculateDimension(g, captchaText);
+	}
+	/**
+	 * Displays a the loading text on a light-grey striped background.
+	 * @param g
+	 * @param loadingText
+	 * @param d
+	 */
+	@Override
+	public void paintLoadingGraphics(Graphics g, String loadingText, Dimension d){
+		for(int i = 0; i<d.getWidth(); i += 10){
+			g.setColor(new Color(250,250,250));
+			g.fillRect(i, 0, 5, d.height);
+			g.setColor(new Color(240,240,240));
+			g.fillRect(i+5, 0, 5, d.height);
+		}
+		g.setColor(Color.RED);
+		g.drawString(loadingText, 5, (int) ((d.height + 
+				g.getFontMetrics().getAscent()) / 2));
+	}
 	
 
 }

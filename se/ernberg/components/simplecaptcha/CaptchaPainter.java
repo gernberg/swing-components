@@ -33,4 +33,23 @@ public interface CaptchaPainter {
 	 */
 	public void forceRegeneratedImage();
 
+	/**
+	 * This method is called before "paint" and used in order to show graphics 
+	 * while waiting for {@link CaptchaTextGenerator} to finish. 
+	 * 
+	 * @param g Graphics objects where to paint
+	 * @param text Loading text to display. 
+	 * @param d Dimensions to paint
+	 */
+	public void paintLoadingGraphics(Graphics g, String text, Dimension d);
+	
+	/**
+	 * Should calculate the dimensions needed for loading graphics.
+	 * 
+	 * @param graphics
+	 * @param loadingText
+	 * @return Dimension
+	 */
+	public Dimension calculateLoadingDimension(Graphics graphics,
+			String loadingText);
 }

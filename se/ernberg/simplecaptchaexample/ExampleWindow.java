@@ -1,12 +1,17 @@
 package se.ernberg.simplecaptchaexample;
 
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Insets;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
 
 import se.ernberg.components.simplecaptcha.BasicCaptchaPainter;
 import se.ernberg.components.simplecaptcha.BasicCaptchaTextGenerator;
@@ -77,7 +82,55 @@ public class ExampleWindow {
 		});
 		
 		mainPanel.add(captcha);
-
+		
+		final JTextField textField = new JTextField();
+		textField.setBackground(Color.BLACK);
+		textField.setForeground(Color.white);
+		// This is also a slow-generating captcha with the difference that it 
+		// uses a custom textfield.
+		captcha = new SimpleCaptcha(new BasicCaptchaPainter(), new CaptchaTextGenerator() {
+			
+			@Override
+			public String generateString() {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				return "good morning";
+			}
+		}, textField);
+		// Let's try a default loading message
+		captcha.setLoadingText("Laddar in text ...");
+		
+		// Let's pack when the slow-captcha is done generating text
+		captcha.addCaptchaObserver(new CaptchaObserver() {
+			@Override
+			public void textGenerationComplete(long id) {
+				if(id == SimpleCaptcha.CAPTCHA_GENERATED)
+					frame.pack();
+			}
+		});
+		captcha.addCaptchaStatusUpdatedListener(new CaptchaStatusListener() {
+			
+			@Override
+			public void statusUpdated(boolean isCorrect) {
+				if(isCorrect){
+					textField.setBackground(new Color(0,128,0));
+				}else{
+					textField.setBackground(Color.BLACK);
+				}
+			}
+		});
+		captcha.removeTextFieldFromCaptchaComponent();
+		
+		
+		mainPanel.add(captcha);
+		mainPanel.add(textField);
+		
+		
+		
+		
 		// Use only a,b,c and mix upper / lowercase
 		BasicCaptchaTextGenerator textGenerator = new BasicCaptchaTextGenerator(
 				"abc");

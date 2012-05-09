@@ -52,7 +52,7 @@ public class BasicCaptchaPainter extends CaptchaPainterAdapter implements Captch
 		return image;
 	}
 	
-	
+
 	/**
 	 * Calculates the width required to paint the text
 	 */
@@ -60,6 +60,14 @@ public class BasicCaptchaPainter extends CaptchaPainterAdapter implements Captch
 	public Dimension calculateDimension(Graphics g, String captchaText) {
 		return new Dimension(g.getFontMetrics().stringWidth(captchaText)+10,
 				g.getFontMetrics().getHeight()+10);
+	}
+	
+	/**
+	 * Calculates the width required to paint the loading text
+	 */
+	@Override
+	public Dimension calculateLoadingDimension(Graphics g, String captchaText) {
+		return calculateDimension(g, captchaText);
 	}
 
 	/**

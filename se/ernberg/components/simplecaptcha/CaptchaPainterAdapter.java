@@ -7,6 +7,7 @@ import java.awt.Image;
 public abstract class CaptchaPainterAdapter implements CaptchaPainter{
 	boolean needsRegeneratedImage = true;
 	Image image;
+		
 	/**
 	 * Paints the text string on the graphics instance (with some obfuscation as
 	 * described in the class definition)
@@ -37,5 +38,18 @@ public abstract class CaptchaPainterAdapter implements CaptchaPainter{
 	public void forceRegeneratedImage() {
 		needsRegeneratedImage = true;
 	}
-	
+	/**
+	 * Method used for drawing loading graphics. This method ust calls the 
+	 * paint-method with a loading message provided. 
+	 * 
+	 * Probably you want to override this in you Painter and eg. use a different 
+	 * appearance.
+	 * 
+	 * @param g
+	 * @param text
+	 * @param d
+	 */
+	public void paintLoadingGraphics(Graphics g, String text, Dimension d){
+		paint(g, text, d);
+	}
 }

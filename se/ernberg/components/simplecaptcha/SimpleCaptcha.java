@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 
 import se.ernberg.components.RefreshButton;
 
@@ -40,7 +41,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	/**
 	 * Used for user-input
 	 */
-	private final JTextField textfield = new JTextField();
+	private final JTextField textField;
 	/**
 	 * This is the captchaText that we want the user to write
 	 */
@@ -81,6 +82,12 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 */
 	private long lastGenerationID = 0;
 
+	private static String defaultLoadingText = "Loading...";
+	
+	private String loadingText;
+	
+	private boolean generatingText = true;
+	
 	/**
 	 * Creating a new SimpleCaptcha, if no TextGenerator and/or CaptchaPainter
 	 * is specified the getDefaultPainter() and/or getDefaultTextGenerator() are
@@ -94,11 +101,16 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * @param captchaTextGenerator
 	 *            A generator that is responsible for generating the
 	 *            text-strings used as captcha
+	 * @param loadingText
+	 * 			  The text that is shown while {@link CaptchaTextGenerator} is 
+	 * 			  generating a captcha string.
 	 */
 	public SimpleCaptcha() {
 		this(getDefaultPainter(), getDefaultTextGenerator());
 	}
-
+	public SimpleCaptcha(String loadingText) {
+		this(getDefaultPainter(), getDefaultTextGenerator(), loadingText);
+	}
 	public SimpleCaptcha(CaptchaPainter captchaPainter) {
 		this(captchaPainter, getDefaultTextGenerator());
 	}
@@ -108,40 +120,86 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	}
 
 	public SimpleCaptcha(CaptchaPainter captchaPainter,
-			CaptchaTextGenerator captchaTextGenerator) {
+			CaptchaTextGenerator captchaTextGenerator){
+		this(captchaPainter, captchaTextGenerator, getDefaultLoadingText());
+	}
+	public SimpleCaptcha(CaptchaPainter captchaPainter,
+			CaptchaTextGenerator captchaTextGenerator, String loadingText){
+		this(captchaPainter, captchaTextGenerator, loadingText, new JTextField());
+	}
+	public SimpleCaptcha(BasicCaptchaPainter captchaPainter,
+			CaptchaTextGenerator captchaTextGenerator, JTextField textField) {
+		this(captchaPainter, captchaTextGenerator, getDefaultLoadingText(), textField); 
+	}
+	public SimpleCaptcha(CaptchaPainter captchaPainter,
+			CaptchaTextGenerator captchaTextGenerator,
+			String loadingText,
+			final JTextField textField) {
+		this.loadingText = loadingText;
 		this.captchaPainter = captchaPainter;
 		this.captchaTextGenerator = captchaTextGenerator;
-
+		this.textField = textField;
 		captchaImage = new CaptchaImage();
 
+		
 		setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
-		textfield.getDocument().addDocumentListener(this);
-		textfield.addFocusListener(this);
+		textField.getDocument().addDocumentListener(this);
+		textField.addFocusListener(this);
 		captchaImage.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				// If one clicks on the captchaImage, set focus to the
 				// textfield.
-				textfield.requestFocus();
+				textField.requestFocus();
 			}
 		});
 
 		refreshButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				textfield.setText("");
+				textField.setText("");
 				generateCaptchaText(lastGenerationID++);
 			}
 		});
 
 		add(captchaImage);
-		add(textfield);
+		add(textField);
 		add(refreshButton);
 		addCaptchaStatusUpdatedListener(this);
 		generateCaptchaText(CAPTCHA_GENERATED);
 	}
-
+	/**
+	 * Removes the textfield from the captcha component
+	 */
+	public void removeTextFieldFromCaptchaComponent(){
+		remove(textField);
+	}
+	/**
+	 * Returns the default loading text
+	 * 
+	 * @return String containing loading text
+	 */
+	protected static  String getDefaultLoadingText() {
+		return defaultLoadingText;
+	}
+	
+	/**
+	 * Returns the current loading text used.
+	 * 
+	 * @return String containing current loading text
+	 */
+	public String getLoadingText() {
+		return loadingText;
+	}
+	/**
+	 * Sets the loadingtext to provided string
+	 * 
+	 * @param loadingText the new String to be used as loading text
+	 */
+	public void setLoadingText(String loadingText) {
+		this.loadingText = loadingText;
+	}
 	/**
 	 * Returns the default CaptchaPainter
 	 * 
@@ -241,7 +299,9 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * @return
 	 */
 	private boolean isCorrect() {
-		return captchaText.equalsIgnoreCase(textfield.getText());
+		if(captchaText==null)
+			return false;
+		return captchaText.equalsIgnoreCase(textField.getText());
 	}
 
 	/**
@@ -295,7 +355,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * @param oldObject
 	 * @param newObject
 	 */
-	private void repaintIfNeeded(Object oldObject, Object newObject) {
+	private void repaintIfDifferent(Object oldObject, Object newObject) {
 		if (!oldObject.equals(newObject)) {
 			revalidate();
 			repaint();
@@ -306,20 +366,19 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * Is called when something has changed - repaints and revalidates the
 	 * component
 	 */
-	public void somethingChanged() {
+	public void updateGraphics() {
 		captchaImage.forceRegeneratedImage();
 		revalidate();
 		repaint();
 	}
 
 	/**
-	 * Returns the captcha text, or an empty string if no captcha exists
+	 * Returns the captcha text.
+	 * Should never be called if isGenerating is true.
 	 * 
 	 * @return captchaText
 	 */
-	protected String getCaptchaText() {
-		if (captchaText == null)
-			return "";
+	protected String getCaptchaText(){
 		return captchaText;
 	}
 
@@ -376,7 +435,7 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 * @param captchaPainter
 	 */
 	public void setPainter(CaptchaPainter captchaPainter) {
-		repaintIfNeeded(this.captchaPainter, captchaPainter);
+		repaintIfDifferent(this.captchaPainter, captchaPainter);
 		this.captchaPainter = captchaPainter;
 	}
 
@@ -387,6 +446,17 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 	 */
 	public void showRefreshButton(boolean showRefreshButton) {
 		refreshButton.setVisible(showRefreshButton);
+	}
+	private void startGeneratingText(){
+		generatingText = true;
+		updateGraphics();
+	}
+	private void doneGeneratingText(){
+		generatingText = false;
+		updateGraphics();
+	}
+	private boolean isGeneratingText(){
+		return generatingText;
 	}
 	/**
 	 * Generates the captchaText, useful if the CaptchaTextGenerator or
@@ -405,16 +475,19 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		private final long textGenerationID;
 
 		private CaptchaTextGenerationThread(long textGenerationID) {
+			
 			this.textGenerationID = textGenerationID;
 		}
 
 		@Override
 		public void run() {
+			startGeneratingText();
 			captchaText = captchaTextGenerator.generateString();
-			textfield.setColumns(captchaText.length());
+			doneGeneratingText();
+			textField.setColumns(captchaText.length());
 			captchaImage.validate();
 			textChanged();
-			somethingChanged();
+			updateGraphics();
 			notifyTextGenerationObservers(textGenerationID);
 		}
 
@@ -456,8 +529,12 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
-			getCaptchaPainter().paint(g, getCaptchaText(),
-					new Dimension(getWidth(), getHeight()));
+			Dimension d = new Dimension(getWidth(), getHeight());
+			if(isGeneratingText()){
+				getCaptchaPainter().paintLoadingGraphics(g, getLoadingText(), d);
+			}else{
+				getCaptchaPainter().paint(g, getCaptchaText(), d);
+			}
 		}
 
 		/**
@@ -488,8 +565,13 @@ public class SimpleCaptcha extends JPanel implements DocumentListener,
 		 */
 		@Override
 		public Dimension getPreferredSize() {
-			return getCaptchaPainter().calculateDimension(getGraphics(),
-					getCaptchaText());
+			if(isGeneratingText()){
+				return getCaptchaPainter().calculateLoadingDimension(getGraphics(),
+						getLoadingText());
+			}else{
+				return getCaptchaPainter().calculateDimension(getGraphics(),
+						getCaptchaText());	
+			}
 		}
 
 		/**
